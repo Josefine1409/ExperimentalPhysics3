@@ -10,20 +10,17 @@ end
 figure
 xlabel('Channel')
 ylabel('Energy')
+errorbar(data(1,:),data(3,:),data(2,:),'.')
 
-x =data(3,:)
-y = data(1,:)
-yerr = data(2,:)
-errorbar(x,y,yerr,'.')
-beta0 = [1,2];
-linFun =@(beta,x) beta(1).*x+beta(2)
+
+beta0 = [(x2+x3)/2,(x3-x2)/3,max(y),0,20];
+plot(x,fitfunction(beta0,x))
 w = 1./yerr.^2;
-[beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x,y,@(beta,x) linFun(beta,x),beta0,'weights',w)
-hold on
-plot(x,linFun(beta,x))
+[beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x,y,@fitfunction,beta0,'weights',w);
+plot(x,fitfunction(beta,x))
+plot(x,beta(4).*x+beta(5))
 us = CovB/MSE;
-MSE
-pValue = 1-chi2cdf(MSE*(length(y)-2),(length(y)-2))
+pValue(i) = 1-chi2cdf(MSE*(length(y)-2),(length(y)-5));
 
 
 %%
