@@ -1,7 +1,7 @@
 clear all; close all;clc;
 folderName = {'Aluminum'}
 name = {'Al'}
-channelInterval= [[490,590]]
+channelInterval= [[520,580]]
 plateThikness = {[0,10.11,20.22,30.34,40.46,50.55,60.65,70.79,80.9]}
 
 for i = 1:length(name)
@@ -15,9 +15,23 @@ for i = 1:length(name)
             hold on 
             plot(X([channelInterval(1,1),channelInterval(1,2)]),Y([channelInterval(1,1),channelInterval(1,2)]),'*')
         end 
-        figure
-        cErr = sqrt(counts)
-       errorbar(plateThikness{i},counts,cErr,'.')
+    figure
+    cErr = sqrt(counts)
+    x = plateThikness{i}
+    y = counts
+    yerr = cErr
+    errorbar(x,y,yerr,'.')
+    hold on
+    beta0 = [y(1)-y(end),-0.1,y(end),0];
+    linFun =@(beta,x) beta(1).*exp(beta(2).*x)+beta(3)+beta(4).*x
+    plot(x,linFun(beta0,x))
+    w = 1./yerr.^2;
+    [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x,y,@(beta,x) linFun(beta,x),beta0,'weights',w)
+    hold on
+    plot(x,linFun(beta,x))
+    us = CovB/MSE;
+    MSE
+    pValue = 1-chi2cdf(MSE*(length(y)-2),(length(y)-2))
 end
 
 function [X,Y,Yerr] = hisFraData(filename)
