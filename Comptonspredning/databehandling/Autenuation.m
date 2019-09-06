@@ -1,8 +1,8 @@
 clear all; close all;clc;
-folderName = {'Aluminum','Lead','Cupper','Brass'}
-name = {'Al','Pb','Cu','Brass'}
+folderName = {'Aluminum','Lead','Cupper','Brass'};
+name = {'Al','Pb','Cu','Brass'};
 
-channelInterval= [[480,600],[450,620],[450,620],[450,620]];
+channelInterval= [[470,610],[470,610],[470,610],[470,610]];
 deltaThiknessLead = [1.13,1.10,1.13,1.01,1.04,1.05,1.05,1.19,1.06,1.21];
 plateThiknessLead(1) = 0;
 for i=1:length(deltaThiknessLead)
@@ -28,35 +28,43 @@ for i = 1:length(name)
         end 
     figure
     hold on
-    xlabel('Thikness of material [cm^-1]')
+    xlabel('Thikness of material [cm]')
     ylabel('Counts under peak')
 
     cErr = sqrt(counts);
-    x = plateThikness{i}
-    y = counts
+    x = plateThikness{i};
+    y = counts;
     yerr = cErr;
-    beta0 = [y(1)-y(end),-0.1,y(end)];
+    beta0 = [y(1)-y(end),-10,y(end)];
     linFun =@(beta,x) beta(1).*exp(x./beta(2))+beta(3);
-    plot(x,linFun(beta0,x))
+%     plot(x,linFun(beta0,x))
     w = 1./yerr.^2;
-    [beta,R,J,CovB,MSE,ErrorModelInfo]  = nlinfit(x,y,@(beta,x) linFun(beta,x),beta0,'weights',w);
+    [beta,~,~,CovB,MSE]  = nlinfit(x,y,@(beta,x) linFun(beta,x),beta0,'weights',w);
+    beta(2)
+    CovB(2,2)
+    MSE
     yerr = sqrt(yerr.^2 + (beta(1).*beta(2).*exp(beta(2).*x)*plateThiknessUncertanty).^2);
+    yerr(1) = sqrt(y(1));
     w = 1./yerr.^2;
+    [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x,y,@(beta,x) linFun(beta,x),beta,'weights',w);
+    beta(2)
+        CovB(2,2)
+        MSE
+
     errorbar(x,y,yerr,'.')
-%     [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x,y,@(beta,x) linFun(beta,x),beta,'weights',w);
-    
     hold on
     xs = linspace(x(1),x(end)+2,1000);
     plot(xs,linFun(beta,xs))
     us = CovB/MSE;
     US{i} = us;
     mse{i} = MSE;
-    BETA{i} = beta
+    BETA{i} = beta;
     pValue= 1-chi2cdf(MSE*(length(y)-2),(length(y)-2));
     PvALUE{i} = pValue;
     title(['Fit of autenuation for material ',name{i},', P-value =',num2str(pValue)])
     
-    disp(['Fit of atenuation for ',name{i}, ' gives tau = ', num2str(beta(2)),'\pm',num2str(us(2,2)),' cm^-1'])
+    disp('_____________________________________________________________________________')
+    disp(['Fit of atenuation for ',name{i}, ' gives tau = ', num2str(beta(2)),'+-',num2str(us(2,2)),' cm^-1'])
     disp(['and bacground = ', num2str(beta(3)),'+-',num2str(us(3,3)),' counts.'])
     disp(['With MSE = ', num2str(MSE),' with p-value: ',num2str(pValue)])
 

@@ -18,24 +18,24 @@ for i = 1:length(name)
             path  = [pathStart num2str(j-1) 'Plates_ch001.txt'];
             [X,Y,Yerr] = hisFraData(path);
             counts(j) = sum(Y((channelInterval(1,1):channelInterval(1,2))));
-            figure
-            title([name{i},': measurement num: ',num2str(j),', T =',num2str(plateThikness{i}(j))])
-            hold on
-            plot(X,Y,'.')
-            xlabel('Channel')
-            ylabel('Counts')
-            plot(X([channelInterval(1,1):channelInterval(1,2)]),Y([channelInterval(1,1):channelInterval(1,2)]),'*')
+%             figure
+%             title([name{i},': measurement num: ',num2str(j),', T =',num2str(plateThikness{i}(j))])
+%             hold on
+%             plot(X,Y,'.')
+%             xlabel('Channel')
+%             ylabel('Counts')
+%             plot(X([channelInterval(1,1):channelInterval(1,2)]),Y([channelInterval(1,1):channelInterval(1,2)]),'*')
         end 
     figure
     hold on
-    xlabel('Thiknes of material [cm^-1]')
+    xlabel('Thikness of material [cm^-1]')
     ylabel('Counts under peak')
 
     cErr = sqrt(counts);
     x = plateThikness{i}
     y = counts
     yerr = cErr;
-    beta0 = [y(1)-y(end),-0.1,y(end)];
+    beta0 = [y(1)-y(end),-0.01,y(end)];
     linFun =@(beta,x) beta(1).*exp(x./beta(2))+beta(3);
     plot(x,linFun(beta0,x))
     w = 1./yerr.^2;
@@ -56,8 +56,8 @@ for i = 1:length(name)
     PvALUE{i} = pValue;
     title(['Fit of autenuation for material ',name{i},', P-value =',num2str(pValue)])
     
-    disp(['Fit of atenuation for ',name{i}, ' gives tau = ', num2str(beta(2)),'\pm',num2str(us(2,2)),' cm^-1'])
-    disp(['and bacground = ', num2str(beta(3)),'\pm',num2str(us(3,3)),' counts.'])
+    disp(['Fit of atenuation for ',name{i}, ' gives tau = ', num2str(beta(2)),'+-',num2str(us(2,2)),' cm^-1'])
+    disp(['and bacground = ', num2str(beta(3)),'+-',num2str(us(3,3)),' counts.'])
     disp(['With MSE = ', num2str(MSE),' with p-value: ',num2str(pValue)])
 
 end
