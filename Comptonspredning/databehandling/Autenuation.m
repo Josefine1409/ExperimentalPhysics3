@@ -1,6 +1,9 @@
 clear all; close all;clc;
 folderName = {'Aluminum','Lead','Cupper','Brass'};
 name = {'Al','Pb','Cu','Brass'};
+rho = [2.699e+00,1.135E+01,8.960e+00]
+mu_rho = [7.48e-02,1.128e-1,7.225E-02]
+mu = mu_rho.*rho
 
 channelInterval= [[470,610],[470,610],[470,610],[470,610]];
 deltaThiknessLead = [1.13,1.10,1.13,1.01,1.04,1.05,1.05,1.19,1.06,1.21];
@@ -8,8 +11,8 @@ plateThiknessLead(1) = 0;
 for i=1:length(deltaThiknessLead)
     plateThiknessLead(i+1) = sum(deltaThiknessLead(end-i+1:end));
 end
-plateThikness = {[0,10.11,20.22,30.34,40.46,50.55,60.65,70.79,80.9],[plateThiknessLead],[0,1.02,2.06,3.05,4.04,5.06,6.10,7.09,8.12,9.11],[0,7.98,16.03,24.02]};
-plateThiknessUncertanty = 0.02;
+plateThikness = {[0,10.11,20.22,30.34,40.46,50.55,60.65,70.79,80.9]./10,[plateThiknessLead]./10,[0,1.02,2.06,3.05,4.04,5.06,6.10,7.09,8.12,9.11]./10,[0,14.19,29.87,44.42]./10,[0,7.98,16.03,24.02]./10};
+plateThiknessUncertanty = 0.01;
 
 for i = 1:length(name)
     counts=zeros(size(plateThikness{i}));
@@ -27,6 +30,9 @@ for i = 1:length(name)
 %             plot(X([channelInterval(1,1):channelInterval(1,2)]),Y([channelInterval(1,1):channelInterval(1,2)]),'*')
         end 
     figure
+    hej = log(counts./counts(1));
+    plot(plateThikness{i},hej,'.')
+    figure
     hold on
     xlabel('Thikness of material [cm]')
     ylabel('Counts under peak')
@@ -35,21 +41,21 @@ for i = 1:length(name)
     x = plateThikness{i};
     y = counts;
     yerr = cErr;
-    beta0 = [y(1)-y(end),-10,y(end)];
-    linFun =@(beta,x) beta(1).*exp(x./beta(2))+beta(3);
+    beta0 = [y(1)-y(end),-0.1,y(end)];
+    linFun =@(beta,x) beta(1).*exp(x.*beta(2))+beta(3);
 %     plot(x,linFun(beta0,x))
     w = 1./yerr.^2;
     [beta,~,~,CovB,MSE]  = nlinfit(x,y,@(beta,x) linFun(beta,x),beta0,'weights',w);
-    beta(2)
-    CovB(2,2)
-    MSE
+%     beta(2)
+%     CovB(2,2)
+%     MSE
     yerr = sqrt(yerr.^2 + (beta(1).*beta(2).*exp(beta(2).*x)*plateThiknessUncertanty).^2);
     yerr(1) = sqrt(y(1));
     w = 1./yerr.^2;
     [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x,y,@(beta,x) linFun(beta,x),beta,'weights',w);
-    beta(2)
-        CovB(2,2)
-        MSE
+%     beta(2)
+%         CovB(2,2)
+%         MSE
 
     errorbar(x,y,yerr,'.')
     hold on
@@ -64,7 +70,7 @@ for i = 1:length(name)
     title(['Fit of autenuation for material ',name{i},', P-value =',num2str(pValue)])
     
     disp('_____________________________________________________________________________')
-    disp(['Fit of atenuation for ',name{i}, ' gives tau = ', num2str(beta(2)),'+-',num2str(us(2,2)),' cm^-1'])
+    disp(['Fit of atenuation for ',name{i}, ' gives mu = ', num2str(beta(2)),'+-',num2str(us(2,2)),' cm^-1'])
     disp(['and bacground = ', num2str(beta(3)),'+-',num2str(us(3,3)),' counts.'])
     disp(['With MSE = ', num2str(MSE),' with p-value: ',num2str(pValue)])
 

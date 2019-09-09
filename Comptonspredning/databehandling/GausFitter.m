@@ -7,12 +7,12 @@ peakValues = {[1.1732,1.3325],[0.6617]}
 data = [];
 for i = 1:length(filenames)
     [X,Y,Yerr] =hisFraData(filenames{i})
-    data = [data, fitGaussInSpectrum(X,Y,Z,names{i},peakValues{i})]
+    data = [data, fitGaussInSpectrum(X,Y,Yerr,names{i},peakValues{i})]
 end
 figure
 xlabel('Channel')
 ylabel('Energy')
-
+save
 x =data(3,:)
 y = data(1,:)
 yerr = data(2,:)
@@ -23,7 +23,7 @@ w = 1./yerr.^2;
 [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x,y,@(beta,x) linFun(beta,x),beta0,'weights',w)
 hold on
 plot(x,linFun(beta,x))
-us = CovB/MSE;
+us = CovB/MSE
 MSE
 pValue = 1-chi2cdf(MSE*(length(y)-2),(length(y)-2))
 function [X,Y,Yerr] = hisFraData(filename)
