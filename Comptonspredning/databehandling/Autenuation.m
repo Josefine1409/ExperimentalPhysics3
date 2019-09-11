@@ -2,7 +2,7 @@ clear all; close all;clc;
 folderName = {'Aluminum','Lead','Cupper','Brass'};
 name = {'Al','Pb','Cu','Brass'};
 rho = [2.699e+00,1.135E+01,8.960e+00]
-mu_rho = [7.48e-02,1.128e-1,7.225E-02]
+mu_rho = [7.5055e-02,11.3663e-2,7.3103E-02]
 mu = mu_rho.*rho
 
 channelInterval= [[450,630],[450,630],[450,630],[450,630]];
@@ -21,7 +21,7 @@ for i = 1:length(name)
         for j = 1:length(plateThikness{i})
             path  = [pathStart num2str(j-1) 'Plates_ch001.txt'];
             [X,Y,Yerr] = hisFraData(path);
-            [counts(j),countUs(j)]  = gaussCounter(X,Y,Yerr,440,630,[name{i},': measurement num: ',num2str(j),', T =',num2str(plateThikness{i}(j))]);
+            [counts(j),countUs(j)]  = gaussCounter(X,Y,Yerr,400,700,[name{i},': measurement num: ',num2str(j),', T =',num2str(plateThikness{i}(j))]);
 %             counts(j) = sum(Y((channelInterval(1,1):channelInterval(1,2))));
 %             figure
 %             title([name{i},': measurement num: ',num2str(j),', T =',num2str(plateThikness{i}(j))])
@@ -117,19 +117,21 @@ x = x(lowerIndex);
 y = y(lowerIndex);
 yerr = yerr(lowerIndex);
 
-beta0 = [(xmin+xmax)/2,(xmax-xmin)/3,max(y),0,20];
+beta0 = [(xmin+xmax)/2,(xmax-xmin)/3,max(y),0,20,0];
 plot(x,fitfunction(beta0,x))
 w = 1./yerr.^2;
 [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x,y,@fitfunction,beta0,'weights',w);
 plot(x,fitfunction(beta,x));
-plot(x,beta(4).*x+beta(5));
+plot(x,beta(4).*x+beta(5)+beta(6).*x.^2);
 us = CovB/MSE;
 pValue = 1-chi2cdf(MSE*(length(y)-5),(length(y)-5));
 
+
+% background = (xmax-xmin)*beta(5) + 1/2.*beta(4).*(xmax^2-xmin^2)
 title([titleName 'med p-value: ' num2str(pValue)])
 counts = abs(2*sqrt(pi)*beta(2)*beta(3));
-countUns = sqrt(counts+(2*sqrt(pi)*beta(3)).^2*us(2,2).^2+(2*sqrt(pi)*beta(2)).^2*us(3,3).^2)
+countUns = sqrt(counts+(2*sqrt(pi)*beta(3)).^2*us(2,2).^2+(2*sqrt(pi)*beta(2)).^2*us(3,3).^2);
 end
 function y = fitfunction(beta,x)
-    y = beta(4).*x+beta(5)+abs(beta(3)).*exp(-((x-beta(1))./(2.*abs(beta(2)))).^2);
+    y = beta(6).*x.^2+beta(4).*x+beta(5)+abs(beta(3)).*exp(-((x-beta(1))./(2.*abs(beta(2)))).^2);
 end

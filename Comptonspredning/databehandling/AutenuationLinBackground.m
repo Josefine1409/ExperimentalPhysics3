@@ -2,7 +2,7 @@ clear all; close all;clc;
 folderName = {'Aluminum','Lead','Cupper','Brass'};
 name = {'Al','Pb','Cu','Brass'};
 rho = [2.699e+00,1.135E+01,8.960e+00]
-mu_rho = [7.48e-02,1.128e-1,7.225E-02]
+mu_rho = [7.5055e-02,11.3663e-2,7.3103E-02]
 mu = mu_rho.*rho
 
 channelInterval= [[450,630],[450,630],[450,630],[450,630]];
@@ -16,11 +16,12 @@ plateThiknessUncertanty = 0.01;
 
 for i = 1:length(name)
     counts=zeros(size(plateThikness{i}));
+    countUs=zeros(size(plateThikness{i}));
     pathStart = ['..\data\AttenuationCoefficient\' folderName{i} '\AttenuationCoefficient_' name{i} '_'];
         for j = 1:length(plateThikness{i})
             path  = [pathStart num2str(j-1) 'Plates_ch001.txt'];
             [X,Y,Yerr] = hisFraData(path);
-            [counts(j),countUs(j)]  = gaussCounter(X,Y,Yerr,440,630,[name{i},': measurement num: ',num2str(j),', T =',num2str(plateThikness{i}(j))]);
+            [counts(j),countUs(j)]  = gaussCounter(X,Y,Yerr,400,700,[name{i},': measurement num: ',num2str(j),', T =',num2str(plateThikness{i}(j))]);
 %             counts(j) = sum(Y((channelInterval(1,1):channelInterval(1,2))));
 %             figure
 %             title([name{i},': measurement num: ',num2str(j),', T =',num2str(plateThikness{i}(j))])
@@ -39,7 +40,7 @@ for i = 1:length(name)
     ylabel('Counts under peak')
     x = plateThikness{i};
     y = counts;
-    yerr = cErr;
+    yerr = countUs;
     beta0 = [y(1)-y(end),-0.1];
     linFun =@(beta,x) beta(1).*exp(x.*beta(2));
 %     plot(x,linFun(beta0,x))
@@ -95,7 +96,7 @@ end
 Yerr = sqrt(Y) +(Y==0);
 end
 
-function [counts,countUs]=gaussCounter(X,Y,Yerr,xmin,xmax,titleName)
+function [counts,countUns]=gaussCounter(X,Y,Yerr,xmin,xmax,titleName)
 figure
 errorbar(X,Y,Yerr,'.')
 hold on
@@ -125,9 +126,11 @@ plot(x,beta(4).*x+beta(5));
 us = CovB/MSE;
 pValue = 1-chi2cdf(MSE*(length(y)-5),(length(y)-5));
 
+
+% background = (xmax-xmin)*beta(5) + 1/2.*beta(4).*(xmax^2-xmin^2)
 title([titleName 'med p-value: ' num2str(pValue)])
 counts = abs(2*sqrt(pi)*beta(2)*beta(3));
-countUns = sqrt(counts+(2*sqrt(pi)*beta(3)).^2*us(2,2).^2+(2*sqrt(pi)*beta(2)).^2*us(3,3).^2)
+countUns = sqrt(counts+(2*sqrt(pi)*beta(3)).^2*us(2,2).^2+(2*sqrt(pi)*beta(2)).^2*us(3,3).^2);
 end
 function y = fitfunction(beta,x)
     y = beta(4).*x+beta(5)+abs(beta(3)).*exp(-((x-beta(1))./(2.*abs(beta(2)))).^2);
