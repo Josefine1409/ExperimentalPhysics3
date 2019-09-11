@@ -5,7 +5,7 @@ rho = [2.699e+00,1.135E+01,8.960e+00]
 mu_rho = [7.48e-02,1.128e-1,7.225E-02]
 mu = mu_rho.*rho
 
-channelInterval= [[470,610],[470,610],[470,610],[470,610]];
+channelInterval= [[450,630],[450,630],[450,630],[450,630]];
 deltaThiknessLead = [1.13,1.10,1.13,1.01,1.04,1.05,1.05,1.19,1.06,1.21];
 plateThiknessLead(1) = 0;
 for i=1:length(deltaThiknessLead)
@@ -16,11 +16,13 @@ plateThiknessUncertanty = 0.01;
 
 for i = 1:length(name)
     counts=zeros(size(plateThikness{i}));
+    countUs=zeros(size(plateThikness{i}));
     pathStart = ['..\data\AttenuationCoefficient\' folderName{i} '\AttenuationCoefficient_' name{i} '_'];
         for j = 1:length(plateThikness{i})
             path  = [pathStart num2str(j-1) 'Plates_ch001.txt'];
             [X,Y,Yerr] = hisFraData(path);
-            counts(j) = sum(Y((channelInterval(1,1):channelInterval(1,2))));
+            [counts(j),countUs(j)]  = gaussCounter(X,Y,Yerr,440,630,[name{i},': measurement num: ',num2str(j),', T =',num2str(plateThikness{i}(j))]);
+%             counts(j) = sum(Y((channelInterval(1,1):channelInterval(1,2))));
 %             figure
 %             title([name{i},': measurement num: ',num2str(j),', T =',num2str(plateThikness{i}(j))])
 %             hold on
@@ -36,13 +38,11 @@ for i = 1:length(name)
     hold on
     xlabel('Thikness of material [cm]')
     ylabel('Counts under peak')
-
-    cErr = sqrt(counts);
     x = plateThikness{i};
     y = counts;
-    yerr = cErr;
-    beta0 = [y(1)-y(end),-0.1,y(end)];
-    linFun =@(beta,x) beta(1).*exp(x.*beta(2))+beta(3);
+    yerr = countUs;
+    beta0 = [y(1)-y(end),-0.1];
+    linFun =@(beta,x) beta(1).*exp(x.*beta(2));
 %     plot(x,linFun(beta0,x))
     w = 1./yerr.^2;
     [beta,~,~,CovB,MSE]  = nlinfit(x,y,@(beta,x) linFun(beta,x),beta0,'weights',w);
@@ -71,7 +71,7 @@ for i = 1:length(name)
     
     disp('_____________________________________________________________________________')
     disp(['Fit of atenuation for ',name{i}, ' gives mu = ', num2str(beta(2)),'+-',num2str(us(2,2)),' cm^-1'])
-    disp(['and bacground = ', num2str(beta(3)),'+-',num2str(us(3,3)),' counts.'])
+%     disp(['and bacground = ', num2str(beta(3)),'+-',num2str(us(3,3)),' counts.'])
     disp(['With MSE = ', num2str(MSE),' with p-value: ',num2str(pValue)])
 
 end
@@ -94,4 +94,42 @@ for i = X
     Y(i) = sum(channel==i);
 end
 Yerr = sqrt(Y) +(Y==0);
+end
+
+function [counts,countUns]=gaussCounter(X,Y,Yerr,xmin,xmax,titleName)
+figure
+errorbar(X,Y,Yerr,'.')
+hold on
+xlabel('Channel')
+ylabel('Counts')
+
+    
+x = X;
+y = Y;
+yerr = Yerr;
+higherIndex = x>xmin;
+x = x(higherIndex);
+y = y(higherIndex);
+yerr = yerr(higherIndex);
+
+lowerIndex = x<xmax;
+x = x(lowerIndex);
+y = y(lowerIndex);
+yerr = yerr(lowerIndex);
+
+beta0 = [(xmin+xmax)/2,(xmax-xmin)/3,max(y),0,20];
+plot(x,fitfunction(beta0,x))
+w = 1./yerr.^2;
+[beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x,y,@fitfunction,beta0,'weights',w);
+plot(x,fitfunction(beta,x));
+plot(x,beta(4).*x+beta(5));
+us = CovB/MSE;
+pValue = 1-chi2cdf(MSE*(length(y)-5),(length(y)-5));
+
+title([titleName 'med p-value: ' num2str(pValue)])
+counts = abs(2*sqrt(pi)*beta(2)*beta(3));
+countUns = sqrt(counts+(2*sqrt(pi)*beta(3)).^2*us(2,2).^2+(2*sqrt(pi)*beta(2)).^2*us(3,3).^2)
+end
+function y = fitfunction(beta,x)
+    y = beta(4).*x+beta(5)+abs(beta(3)).*exp(-((x-beta(1))./(2.*abs(beta(2)))).^2);
 end
