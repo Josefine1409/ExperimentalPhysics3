@@ -16,7 +16,6 @@ plateThiknessUncertanty = 0.01;
 
 for i = 1:length(name)
     counts=zeros(size(plateThikness{i}));
-    countUs=zeros(size(plateThikness{i}));
     pathStart = ['..\data\AttenuationCoefficient\' folderName{i} '\AttenuationCoefficient_' name{i} '_'];
         for j = 1:length(plateThikness{i})
             path  = [pathStart num2str(j-1) 'Plates_ch001.txt'];
@@ -40,7 +39,7 @@ for i = 1:length(name)
     ylabel('Counts under peak')
     x = plateThikness{i};
     y = counts;
-    yerr = countUs;
+    yerr = cErr;
     beta0 = [y(1)-y(end),-0.1];
     linFun =@(beta,x) beta(1).*exp(x.*beta(2));
 %     plot(x,linFun(beta0,x))
@@ -96,7 +95,7 @@ end
 Yerr = sqrt(Y) +(Y==0);
 end
 
-function [counts,countUns]=gaussCounter(X,Y,Yerr,xmin,xmax,titleName)
+function [counts,countUs]=gaussCounter(X,Y,Yerr,xmin,xmax,titleName)
 figure
 errorbar(X,Y,Yerr,'.')
 hold on
