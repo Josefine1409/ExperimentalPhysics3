@@ -5,7 +5,7 @@ names = {'Co60','Cs137'};
 peakValues = {[1.1732,1.3325],[0.6617]}
 
 data = [];
-for i = 1:length(filenames)
+for i = 2:length(filenames)
     [X,Y,Yerr] =hisFraData(filenames{i})
     data = [data, fitGaussInSpectrum(X,Y,Yerr,names{i},peakValues{i})]
 end
@@ -16,6 +16,7 @@ save
 x =data(3,:)
 y = data(1,:)
 yerr = data(2,:)
+
 errorbar(x,y,yerr,'.')
 beta0 = [1,2];
 linFun =@(beta,x) beta(1).*x+beta(2)
@@ -89,6 +90,8 @@ beta0 = [(x2+x3)/2,(x3-x2)/3,max(y),0,20];
 plot(x,fitfunction(beta0,x))
 w = 1./yerr.^2;
 [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x,y,@fitfunction,beta0,'weights',w);
+beta(1)
+beta(2)
 plot(x,fitfunction(beta,x))
 plot(x,beta(4).*x+beta(5))
 us = CovB/MSE;
@@ -106,10 +109,10 @@ end
 peakUns;
 peakChannel;
 peakValue;
-data = [peakChannel;peakUns;peakValue;pValue;MSECount];
+data = [peakChannel;peakUns;peakValue;pValue;MSECount;beta];
 end
 
 
 function y = fitfunction(beta,x)
-    y = beta(4).*x+beta(5)+beta(3).*exp(-((x-beta(1))./(2.*beta(2))).^2);
+    y = beta(4).*x+beta(5)+beta(3).*exp(-((x-beta(1))./(beta(2))).^2./2);
 end
