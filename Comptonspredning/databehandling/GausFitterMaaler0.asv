@@ -4,7 +4,9 @@ names = {'Cs137'};
 
 filenames = {'110_15_ch000.txt'};
 
-peakValues = {[0.66164]}
+peakValues = {[0.66164
+
+]}
 peakBorders = {[435,671]}
 
 
@@ -19,9 +21,8 @@ end
 x =data(3,:)
 y = data(1,:)
 yerr = data(2,:)
-xerr = 0.00001
-kerr =sqrt( (yerr*x/y^2).^2+(xerr/y).^2)
-disp(['Energi som funktion af channel: E= (' num2str(x/y*10000) '+-' num2str( kerr*10000) ')*10^-4*Channel ' 'MeV'])
+kerr = yerr*x/y^2
+disp(['Energi som funktion af channel: E= (' num2str(x/y*100) '+-'  num2str(x/y*100)')*10^-2*Channel ' 'MeV'])
 
 function [X,Y,Yerr] = hisFraData(filename)
 addpath('..\data\Kalibrering')

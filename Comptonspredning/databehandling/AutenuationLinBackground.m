@@ -65,6 +65,8 @@ for i = 1:length(name)
     hold on
     xs = linspace(x(1),x(end),1000);
     plot(xs,linFun(beta,xs),'Linewidth',1.5)
+    plot(xs,linFun([beta(1),-mu(i)],xs),'--','Linewidth',1.5)
+    
     errorbar(x,y,yerr,'.','markersize',10)
     ylim([min(y)+(min(y)-max(y))/0.2-max(yerr),max(y)-(min(y)-max(y))/5])
     us = CovB/MSE;
