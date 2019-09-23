@@ -5,14 +5,14 @@ names = {'Co60','Cs137'};
 peakValues = {[1.1732,1.3325],[0.6617]}
 
 data = [];
-for i = 2:length(filenames)
+for i = 1:length(filenames)
     [X,Y,Yerr] =hisFraData(filenames{i})
     data = [data, fitGaussInSpectrum(X,Y,Yerr,names{i},peakValues{i})]
 end
 figure
-xlabel('Channel')
-ylabel('Energy')
-save
+hold on
+xlabel('Energy')
+ylabel('Channel')
 x =data(3,:)
 y = data(1,:)
 yerr = data(2,:)
@@ -27,6 +27,9 @@ plot(x,linFun(beta,x))
 us = CovB/MSE
 MSE
 pValue = 1-chi2cdf(MSE*(length(y)-2),(length(y)-2))
+
+disp(['Energi som funktion af channel: E= ' num2str(beta(1)^-1) 'Channel-' num2str(beta(2)/beta(1)) 'MeV'])
+
 function [X,Y,Yerr] = hisFraData(filename)
 addpath('..\data\Kalibrering')
 delimiter = ' ';
@@ -106,10 +109,11 @@ plot([beta(1)-us(1,1),beta(1)-us(1,1)],[0,max(y)])
 peakChannel(i) = beta(1,1);
 peakUns(i) = us(1,1);
 end
-peakUns;
-peakChannel;
-peakValue;
-data = [peakChannel;peakUns;peakValue;pValue;MSECount;beta];
+
+peakUns
+peakChannel
+peakValue
+data = [peakChannel;peakUns;peakValue;pValue;MSECount];
 end
 
 
