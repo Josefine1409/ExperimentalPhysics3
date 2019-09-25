@@ -35,7 +35,7 @@ clear all; close all;clc;
 % 
 % 
 % 
-Es = linspace(0.1,2,1000);
+Es = linspace(0.1,1.5,1000);
 % 
 % 
 % %%
@@ -146,32 +146,32 @@ ci = nlparci(beta,R,'jacobian',J,'alpha',0.35)
 
 figure(10)
 hold on
-xlabel('Energy [MeV]')
-ylabel('Channel number')
+xlabel('Energy (E) [MeV]')
+ylabel('Channel number (Ch)')
 set(gca,'FontSize',15) 
 
-plot(Es,Ypred,'b','linewidth',1)
-errorbar(x,y',yerr,'.k','markersize',8)
+plot(Es,Ypred,'-','linewidth',1)
+errorbar(x,y',yerr,'.','markersize',8)
 
-plot(Es,Ypred+delta,'b--','linewidth',1)
-plot(Es,Ypred-delta,'b--','linewidth',1)
+% plot(Es,Ypred+delta,'b--','linewidth',1)
+% plot(Es,Ypred-delta,'b--','linewidth',1)
 
-legend('Fit','Data','Fit confidence','Location','northwest')
+legend('Fit','Data','Location','northwest')
 
 
 
 figure(11)
-xlabel('Energy [MeV]')
-ylabel('Residual Channel number')
+xlabel('Energy (E) [MeV]')
+ylabel('Residual Channel number (\DeltaCh)')
 set(gca,'FontSize',15) 
 hold on
 
 plot(Es,0.*Es,'b','linewidth',1)
 
 [YpredMeasurement,deltaM] = nlpredci(@(beta,x) linFun(beta,x),x,beta,R,'jacobian',J,'alpha',0.35);
-errorbar(x,y-YpredMeasurement',yerr,'.k','markersize',8)
-plot(Es,delta,'b--','linewidth',1)
-plot(Es,-delta,'b--','linewidth',1)
+errorbar(x,y-YpredMeasurement',yerr,'.r','markersize',8)
+plot(Es,delta,'k--','linewidth',1)
+plot(Es,-delta,'k--','linewidth',1)
 
 legend('Fit','Data','Fit confidence','Location','southwest')
 
@@ -239,9 +239,9 @@ figure
 errorbar(X*0.0012668-0.013154,Y,Yerr,'.')
 % errorbar(X,Y,Yerr,'.','markersize',10)
 
-xlabel('Energy [MeV]')
+xlabel('Energy (E) [MeV]')
 % xlabel('Channel number')
-ylabel('Counts')
+ylabel('Counts (n)')
 set(gca,'FontSize',15) 
 
 hold on
@@ -251,8 +251,8 @@ end
 figure
 errorbar(X,Y,Yerr,'.','markersize',10)
 hold on
-xlabel('Channel number')
-ylabel('Counts')
+xlabel('Channel number (Ch)')
+ylabel('Counts (n)')
 set(gca,'FontSize',15) 
 title(name)
 

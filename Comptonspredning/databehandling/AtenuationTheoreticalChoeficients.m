@@ -14,12 +14,16 @@ Es   = [4,5,6,8,10].*0.1;
 
 plot(Es,mys,'.')
 hold on 
-[beta] = nlinfit(Es,mys,@(beta,x) beta(1).*x.^2+beta(2).*x+beta(3),[1,1,1]);
+[beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(Es,mys,@(beta,x) beta(1).*x.^2+beta(2).*x+beta(3),[1,1,1]);
  plot(Es,beta(1).*Es.^2+beta(2).*Es+beta(3))
 
 % [beta] = nlinfit(Es,mys,@(beta,x) beta(1).*exp(-x.*beta(2))+beta(3),[10,0.1,5]);
 % plot(Es,beta(1).*exp(-Es.*beta(2))+beta(3))
 EAL = beta(1).*x.^2+beta(2).*x+beta(3)
+
+[Ypred,delta] = nlpredci(@(beta,x) beta(1).*x.^2+beta(2).*x+beta(3),x,beta,R,'jacobian',J,'alpha',0.35)
+delta*[2.699e+00]*10^-2
+
 %% Lead
 E6 = 1.248E-01;
 E8 = 8.870E-02;

@@ -58,8 +58,8 @@ ylabel('Counts')
 figure
 errorbar(X,Y,Yerr,'.')
 hold on
-xlabel('Channel')
-ylabel('Counts')
+xlabel('Channel number (Ch)')
+ylabel('Counts (n)')
 title(name)
 set(gca,'FontSize',15) 
 n = length(peakValue);
@@ -105,11 +105,15 @@ pValue(i) = 1-chi2cdf(MSE*(length(y)-5),(length(y)-5));
 
 peakChannel(i) = beta(1,1);
 peakUns(i) = us(1,1);
+ci = nlparci(beta,R,'jacobian',J,'alpha',0.35)
+peakUns(i) = (ci(1,2)-ci(1,1))/2;
 end
 
 peakUns
 peakChannel
 peakValue
+
+
 data = [peakChannel;peakUns;peakValue;pValue;MSECount];
 end
 
