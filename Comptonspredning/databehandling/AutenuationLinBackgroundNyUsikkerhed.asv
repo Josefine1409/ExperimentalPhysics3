@@ -16,14 +16,10 @@ end
 plateThikness = {[0,10.11,20.22,30.34,40.46,50.55,60.65,70.79,80.9]./10,[plateThiknessLead]./10,[0,1.02,2.06,3.05,4.04,5.06,6.10,7.09,8.12,9.11]./10,[0,14.19,29.87,44.42]./10,[0,7.98,16.03,24.02]./10};
 plateThiknessUncertanty = 0.02;
 
-fig = figure(10)
-
 for i = 1:length(name)
     counts=zeros(size(plateThikness{i}));
     countUs=zeros(size(plateThikness{i}));
     pathStart = ['..\data\AttenuationCoefficient\' folderName{i} '\AttenuationCoefficient_' name{i} '_'];
-    legendString = {}
-    figure
         for j = 1:length(plateThikness{i})
             path  = [pathStart num2str(j-1) 'Plates_ch001.txt'];
             [X,Y,Yerr] = hisFraData(path);
@@ -36,14 +32,11 @@ for i = 1:length(name)
 %             xlabel('Channel')
 %             ylabel('Counts')
 %             plot(X([channelInterval(1,1):channelInterval(1,2)]),Y([channelInterval(1,1):channelInterval(1,2)]),'*')
-            legendString{end+1} = ['t [cm]:' num2str(plateThikness{i}(j))];
         end 
-     legend(legendString)
 %     figure
 %     hej = log(counts./counts(1));
 %     plot(plateThikness{i},hej,'.')
-%     fig = figure;
-    figure(10)
+    fig = figure;
     hold on
     xlabel('Thickness (t) [cm]')
     ylabel('Counts under peak (N)')
@@ -71,16 +64,16 @@ for i = 1:length(name)
 
     hold on
     xs = linspace(x(1),x(end),1000);
-    plot(xs,linFun(beta,xs),'-','Linewidth',1.5,'DisplayName',[name{i} ' fit,'])
+    plot(xs,linFun(beta,xs),'-','Linewidth',1.5)
     
     %     plot(xs,linFun([beta(1),-mu(i)],xs),'--','Linewidth',1.5)
     
-    errorbar(x,y,yerr,'.','markersize',10,'DisplayName',[name{i} ' data,'])
+    errorbar(x,y,yerr,'.','markersize',10)
 %     [Ypred,delta] = nlpredci(@(beta,x) linFun(beta,x),xs,beta,R,'jacobian',J,'alpha',0.35);
 %     plot(xs,Ypred+delta,'k--','Linewidth',0.5)
 %     plot(xs,Ypred-delta,'k--','Linewidth',0.5)
     
-%     legend('Fit','Data','Fit confidence')
+    legend('Fit','Data','Fit confidence')
 
     ylim([max([min(y)-max(yerr),100]),max(y)-(min(y)-max(y))/5])
     us = CovB/MSE;
@@ -96,11 +89,9 @@ for i = 1:length(name)
     disp(['Fit of atenuation for ',name{i}, ' gives mu = ', num2str(beta(2)),'+-',num2str((ci(2,2)-ci(2,1))/2),' cm^-1'])
 %     disp(['and bacground = ', num2str(beta(3)),'+-',num2str(us(3,3)),' counts.'])
     disp(['With MSE = ', num2str(MSE),' with p-value: ',num2str(pValue)])
-%     saveas(fig,['..\figure\Atenuation',name{i},'.png'])
+    saveas(fig,['..\figure\Atenuation',name{i},'.png'])
 
 end
-legend('show','Orientation','horizontal')
-saveas(fig,['..\figure\Atenuation.png'])
 
 
 
@@ -149,14 +140,13 @@ beta0 = [(xmin+xmax)/2,(xmax-xmin)/3,max(y),0,20];
 w = 1./yerr.^2;
 [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x,y,@fitfunction,beta0,'weights',w);
 % errorbar(X,Y,Yerr,'.','markersize',10)
-histogram('BinEdges',[1/2,X(1:end)+1/2],'BinCounts',Y,'EdgeColor','none')
-% plot(x,fitfunction(beta,x),'Linewidth',1.5);
-% plot(x,beta(4).*x+beta(5),'r--','Linewidth',1.5);
+plot(x,fitfunction(beta,x),'Linewidth',1.5);
+plot(x,beta(4).*x+beta(5),'r--','Linewidth',1.5);
 
 [Ypred,delta] = nlpredci(@fitfunction,x,beta,R,'jacobian',J,'alpha',0.35);
 
 % plot(x,Ypred+delta,'k--','Linewidth',0.5)
-% legend('Data','Gauss fit','Background fit')
+legend('Data','Gauss fit','Background fit')
 
 % plot(x,Ypred-delta,'k--','Linewidth',0.5)
 

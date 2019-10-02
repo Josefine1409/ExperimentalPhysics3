@@ -56,7 +56,9 @@ xlabel('MeV Ca.')
 ylabel('Counts')
 
 figure
-errorbar(X,Y,Yerr,'.')
+% errorbar(X,Y,Yerr,'.')
+histogram('BinEdges',[1/2,X(1:end)+1/2],'BinCounts',Y,'EdgeColor','none')
+
 hold on
 xlabel('Channel number (Ch)')
 ylabel('Counts (n)')
@@ -94,6 +96,10 @@ us = CovB/MSE;
 MSE
 MSECount(i) = MSE;
 pValue(i) = 1-chi2cdf(MSE*(length(y)-5),(length(y)-5));
+
+
+plot(x,beta(4).*x+beta(5),'r--','Linewidth',1.5);
+legend('Data','Gauss fit','Background fit')
 
 
 % txt = text(beta(1),max(y)+10,['\leftarrow' num2str(peakValue(i)) ' MeV']);
