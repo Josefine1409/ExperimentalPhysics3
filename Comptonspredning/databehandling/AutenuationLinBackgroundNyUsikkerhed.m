@@ -36,10 +36,10 @@ for i = 1:length(name)
 %     figure
 %     hej = log(counts./counts(1));
 %     plot(plateThikness{i},hej,'.')
-    fig = figure
+    fig = figure;
     hold on
-    xlabel('Thickness x [cm]')
-    ylabel('Counts under peak N')
+    xlabel('Thickness (t) [cm]')
+    ylabel('Counts under peak (N)')
     set(gca, 'YScale', 'log')
     set(gca,'FontSize',15) 
 
@@ -64,18 +64,18 @@ for i = 1:length(name)
 
     hold on
     xs = linspace(x(1),x(end),1000);
-    plot(xs,linFun(beta,xs),'b','Linewidth',1.5)
+    plot(xs,linFun(beta,xs),'-','Linewidth',1.5)
     
     %     plot(xs,linFun([beta(1),-mu(i)],xs),'--','Linewidth',1.5)
     
     errorbar(x,y,yerr,'.','markersize',10)
-    [Ypred,delta] = nlpredci(@(beta,x) linFun(beta,x),xs,beta,R,'jacobian',J,'alpha',0.35);
-    plot(xs,Ypred+delta,'k--','Linewidth',0.5)
-    plot(xs,Ypred-delta,'k--','Linewidth',0.5)
+%     [Ypred,delta] = nlpredci(@(beta,x) linFun(beta,x),xs,beta,R,'jacobian',J,'alpha',0.35);
+%     plot(xs,Ypred+delta,'k--','Linewidth',0.5)
+%     plot(xs,Ypred-delta,'k--','Linewidth',0.5)
     
     legend('Fit','Data','Fit confidence')
 
-    ylim([min(y)+(min(y)-max(y))/0.2-max(yerr),max(y)-(min(y)-max(y))/5])
+    ylim([max([min(y)-max(yerr),100]),max(y)-(min(y)-max(y))/5])
     us = CovB/MSE;
     US{i} = us;
     mse{i} = MSE;
@@ -83,7 +83,7 @@ for i = 1:length(name)
     pValue= 1-chi2cdf(MSE*(length(y)-2),(length(y)-2));
     PvALUE{i} = pValue;
 %     title(['Fit of autenuation for ',name{i}])
-    ci = nlparci(beta,R,'jacobian',J,'alpha',0.35)
+    ci = nlparci(beta,R,'jacobian',J,'alpha',0.35);
     
     disp('_____________________________________________________________________________')
     disp(['Fit of atenuation for ',name{i}, ' gives mu = ', num2str(beta(2)),'+-',num2str((ci(2,2)-ci(2,1))/2),' cm^-1'])
@@ -116,8 +116,8 @@ end
 function [counts,countUns]=gaussCounter(X,Y,Yerr,xmin,xmax,titleName)
 figure
 hold on
-xlabel('Channel Ch ')
-ylabel('Counts n')
+xlabel('Channel number (Ch) ')
+ylabel('Counts (n)')
 set(gca,'FontSize',15) 
 
     
@@ -144,10 +144,10 @@ plot(x,beta(4).*x+beta(5),'r--','Linewidth',1.5);
 
 [Ypred,delta] = nlpredci(@fitfunction,x,beta,R,'jacobian',J,'alpha',0.35);
 
-plot(x,Ypred+delta,'k--','Linewidth',0.5)
-legend('Data','Gauss fit','Background fit','Confidence interval')
+% plot(x,Ypred+delta,'k--','Linewidth',0.5)
+legend('Data','Gauss fit','Background fit')
 
-plot(x,Ypred-delta,'k--','Linewidth',0.5)
+% plot(x,Ypred-delta,'k--','Linewidth',0.5)
 
 
 us = CovB/MSE;
@@ -162,8 +162,8 @@ us3 = (us(3,2)-us(3,1))/2;
 % title([titleName 'med p-value: ' num2str(pValue)])
 counts = abs(2*sqrt(pi)*beta(2)*beta(3));
 countUns = sqrt(counts+...
-    (2*sqrt(pi)*beta(3)).^2*us2.^2+...
-    (2*sqrt(pi)*beta(2)).^2*us3.^2+...
+    (2*sqrt(pi)*beta(3)).^2*us(2,2).^2+...
+    (2*sqrt(pi)*beta(2)).^2*us(3,3).^2+...
     abs(2.*(2*sqrt(pi)*beta(2)).*(2*sqrt(pi)*beta(3))*us(2,3)));
 end
 function y = fitfunction(beta,x)
