@@ -4,17 +4,25 @@ linFun =@(beta,x) (x-beta(2))./beta(1);
 theta = 160/180*pi;
 E  = [350,400]
 HMasses = [1.0078,2.0141,3.0160]
-K = @(m1,m2) (m1.*cos(theta)+sqrt(m2.^2-m1.^2*sin(theta)^2))./(m1+m2)
-KC  = K(HMasses,ones(1,3).*12.0107 )./[1,2,3]
-KAu = K(HMasses,ones(1,3).*196.96657 )./[1,2,3]
+K2 = @(m1,m2) ((m1.*cos(theta)+sqrt(m2.^2-m1.^2*sin(theta)^2))./(m1+m2)).^2
+KC  = K2(HMasses,ones(1,3).*12.0107 )./[1,2,3]
+KAu = K2(HMasses,ones(1,3).*196.96657 )./[1,2,3]
 
-S1Ag = 
-
-E1Ag  = 
-% peakValues ={[KAu(1)*E(1),KC(1)*E(1)],[KAu(2)*E(1),KC(2)*E(1)],[KAu(3)*E(1)],[KAu(1)*E(2),KC(1)*E(2)],[KAu(2)*E(2),KC(2)*E(2)],[KAu(3)*E(2)]}
+% S1Ag = 
+% 
+% E1Ag  = 
+% peakValues ={[KAu(1)*E(1),KC(1)*E(1)],[KAu(2)*E(1),KC(2)*E(1)],[KAu(3)*E(1)]...
+%             ,[KAu(1)*E(2),KC(1)*E(2)],[KAu(2)*E(2),KC(2)*E(2)],[KAu(3)*E(2)]}
 % 
 % peakBorders = {[400,460;280,360],[180,220;122,162],[90,150],...
 %     [465,520;340,380],[205,254;148,189],[117,167]};
+% 
+% peakValues ={[KAu(1)*E(1),KC(1)*E(1)],[KAu(2)*E(1)],[KAu(3)*E(1)]...
+%             ,[KAu(1)*E(2),KC(1)*E(2)],[KAu(2)*E(2)],[KAu(3)*E(2)]}
+% 
+% peakBorders = {[400,460;280,360],[180,220],[90,150],...
+%     [465,520;340,380],[205,254],[117,167]};
+
 
 
 peakValues ={[KAu(1)*E(1)],[KAu(2)*E(1)],[KAu(3)*E(1)],[KAu(1)*E(2)],[KAu(2)*E(2)],[KAu(3)*E(2)]}
@@ -120,10 +128,11 @@ function data = fitGaussInSpectrum(X,Y,Yerr,name,peakValue,peakBorder)
 n = length(peakValue);
 
 figure
-errorbar(X*0.76535+15.7836,Y,Yerr,'.')
+errorbar(X*0.76468+12.393,Y,Yerr,'.')
 xlabel('Energy (E) [keV]')
 ylabel('Counts (n)')
 set(gca,'FontSize',15) 
+xlim([0,400])
 
 hold on
 for i = 1:n
@@ -161,6 +170,7 @@ w = 1./yerr.^2;
 beta(1);
 beta(2);
 plot(x,fitfunction(beta,x),'k--','linewidth',2)
+xlim([0,500])
 us = CovB/MSE;
 mse =MSE;
 MSECount(i) = MSE;
