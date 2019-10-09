@@ -249,7 +249,9 @@ for i = 1:n
     plot([peakValue(i),peakValue(i)],[0,500])
 end
 figure
-errorbar(X,Y,Yerr,'.','markersize',10)
+% histogram('Categories',X,'BinCounts',Y)
+histogram('BinEdges',[1/2,X(1:end)+1/2],'BinCounts',Y,'EdgeColor','none')
+% errorbar(X,Y,Yerr,'.','markersize',10)
 hold on
 xlabel('Channel number (Ch)')
 ylabel('Counts (n)')
@@ -280,7 +282,7 @@ w = 1./yerr.^2;
 [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x,y,@fitfunction,beta0,'weights',w);
 beta(1);
 beta(2);
-plot(x,fitfunction(beta,x),'linewidth',2)
+plot(x,fitfunction(beta,x),'k--','linewidth',2)
 % plot(x,beta(4).*x+beta(5))
 us = CovB/MSE;
 mse =MSE;
@@ -291,7 +293,7 @@ P_Value = 1-chi2cdf(MSE*(length(y)-5),(length(y)-5));
 
 txt = text(beta(1),max(y)+10,['\leftarrow' num2str(peakValue(i)) ' MeV']);
 set(txt,'Rotation',90);
-set(txt,'FontSize',12);
+set(txt,'FontSize',14);
 
 % plot([beta(1)+us(1,1),beta(1)+us(1,1)],[0,max(y)])
 % plot([beta(1)-us(1,1),beta(1)-us(1,1)],[0,max(y)])
