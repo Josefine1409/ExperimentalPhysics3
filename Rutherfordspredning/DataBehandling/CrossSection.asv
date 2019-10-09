@@ -142,6 +142,6 @@ end
 
 
 function y = fitfunction(beta,x)
-    y = beta(1).*x+beta(2)+beta(3).*exp(-((x-beta(4))./(beta(5))).^2./2)+beta(6).*exp(-((x-beta(7))./(beta(8))).^2./2)-abs(beta(9)).*x.^2;
+    y = beta(1).*x+beta(2)+beta(3).*exp(-((x-beta(4))./(beta(5))).^2./2)+beta(6).*exp(-((x-beta(7))./(beta(8))).^2./2)+abs(beta(9).*x.^2;
     y =y';
 end
