@@ -1,7 +1,6 @@
 clear all; close all;clc;
     
-Ein = 349.5
-
+E0 
 c2E = @(x) x*0.76468+12.393
 theta =       [30,            40,           50,             60,            70,            75,            110,           120,           130,           140,           150,           160];
 peakValues =  {c2E([434,445]),c2E([434,431]),c2E([433,427]),c2E([433,410]),c2E([433,396]),c2E([428,388]),c2E([432,350]),c2E([433,340]),c2E([433,330]),c2E([433,323]),c2E([433,318]),c2E([433,314])};
@@ -61,10 +60,12 @@ mC=12-4.4858e-4*12;
 
 K2=@(theta,m2)((m1*cos(theta)+sqrt(m2^2-m1^2*sin(theta).^2))./(m1+m2)).^2;
 
+cs=@(theta,m,E) 1./(sin(theta/2)).^2.*1./(K2(theta,m).*E).^2;
 
+linfun = @(C,thetas) C(1)*cs(theta,mG,GEs)+C(2)
 
-[betaG,RG,JG,CovB,MSE]=nlinfit(thetas,GCs,@(C,thetas) C(1)*cs(thetas,mG,Ein)+C(2),[1,0]);
-[betaC,RC,JC,CovB,MSE]=nlinfit(thetas,CCs,@(C,thetas) C(1)*cs(thetas,mC,Ein)+C(2),[1,0]);
+[betaG,RG,JG,CovB,MSE]=nlinfit(thetas,GCs,linfun,[1,0]);
+[betaC,RC,JC,CovB,MSE]=nlinfit(thetas,CCs,linfun,[1,0]);
 
 
 
@@ -88,33 +89,30 @@ plot(Thetas,350*K2(Thetas,mC),'linewidth',2)
 
 
 figure
-[Ypred,deltaY] = nlpredci(@(C,th) C(1)*cs(th,mG,Ein)+C(2),Thetas,betaG,RG,'jacobian',JG,'alpha',0.35);
+[Ypred,deltaY] = nlpredci(linFun,x,betaG,RG,'jacobian',JG,'alpha',0.35);
 
 errorbar(thetas,GCs,sigmaGCs,'r.','markersize',10)
 hold on
 xlabel('Scattering Angle')
 ylabel('Normed Counts')
 title('Scattering on Gold')
-plot(Thetas,Ypred,'linewidth',2)
+plot(thetas,CG.*cs(thetas,mG,GEs),'linewidth',2)
 
-plot(Thetas,Ypred+deltaY,'k--','linewidth',1)
-plot(Thetas,Ypred-deltaY,'k--','linewidth',1)
+plot(Es,deltaY,'k--','linewidth',1)
+plot(Es,-deltaY,'k--','linewidth',1)
 legend('Fit','Data','Fit confidence','Location','southwest')
 
 
 figure
-[Ypred,deltaY] = nlpredci(@(C,th) C(1)*cs(th,mC,Ein)+C(2),Thetas,betaC,RC,'jacobian',JC,'alpha',0.35);
+[Ypred,deltaY] = nlpredci(linFun,x,betaG,RG,'jacobian',JG,'alpha',0.35);
+
 
 errorbar(thetas,CCs,sigmaCCs,'r.','markersize',10)
 hold on
 xlabel('Scattering Angle [deg]')
 ylabel('Normed Counts')
 title('Scattering on Carbon')
-plot(Thetas,Ypred,'linewidth',2)
-
-plot(Thetas,Ypred+deltaY,'k--','linewidth',1)
-plot(Thetas,Ypred-deltaY,'k--','linewidth',1)
-legend('Fit','Data','Fit confidence','Location','southwest')
+plot(thetas,CC*cs(thetas,mC,CEs),'linewidth',2)
 
 
 
@@ -231,6 +229,8 @@ txt = text(beta(4),y(round(beta(4))==x)+10,['\leftarrow' num2str(beta(4)) '']);
 set(txt,'Rotation',90);
 set(txt,'FontSize',12);
 
+y(round(beta(7))==x)+10
+beta(7)
 txt = text(beta(7),y(round(beta(7))==x)+10,['\leftarrow' num2str(beta(7)) '']);
 set(txt,'Rotation',90);
 set(txt,'FontSize',12);

@@ -1,16 +1,29 @@
 clear all; close all;clc;
     
-Ein = 349.5
+Ein = 349
+c2E = @(x) x.*0.76468+12.393
+m1=1.007276;
+mG=196.966-4.4858e-4*79-0.03343120468;
+mC=12-4.4858e-4*12;
 
-c2E = @(x) x*0.76468+12.393
+K2=@(theta,m2)((m1*cos(theta)+sqrt(m2^2-m1^2*sin(theta).^2))./(m1+m2)).^2;
+
+
 theta =       [30,            40,           50,             60,            70,            75,            110,           120,           130,           140,           150,           160];
 peakValues =  {c2E([434,445]),c2E([434,431]),c2E([433,427]),c2E([433,410]),c2E([433,396]),c2E([428,388]),c2E([432,350]),c2E([433,340]),c2E([433,330]),c2E([433,323]),c2E([433,318]),c2E([433,314])};
 peakBorders = {[390,480],     [380,490],     [380,480],     [350,460],     [340,460],     [340,455],     [310,455],     [300,455],     [280,455],     [280,455],     [280,455],     [280,455]};
 
+
+thetas=[30:10:70 75 110:10:160]./180.*pi;
+
+for i = 1:length(thetas)
+    peakValues{i} = [Ein.*K2(thetas(i),mG),Ein.*K2(thetas(i),mC)];
+end
+
+
 linFun =@(beta,x) (x-beta(2))/beta(1);
 dataAg = [];
 dataC = [];
-c2E = @(x) (x*0.76535+15.78)./1000
 
 
 
@@ -34,19 +47,18 @@ CountsUnsAg = c2E(dataAg(4,:));
 
 %% Maltekode
 
-thetas=[30:10:70 75 110:10:160]./180.*pi;
 ts=[300 300 300 300 350 600 600 600 600 600 600 600];
 FCs=[46449 51781 60300 65892 81962 34228 103355 80585 101501 106019 102580 37053];
 
 GCs=CountsAg;
 CCs=CountsC;
-GEs=EnergyAg*1e+3;
-CEs=EnergyC*1e+3;
+GEs=EnergyAg;
+CEs=EnergyC;
 
 sigmaGCs=CountsUnsAg;
 sigmaCCs=CountsUnsC;
-sigmaGEs=EnergyUnsAg*1e+3;
-sigmaCEs=EnergyUnsC*1e+3;
+sigmaGEs=EnergyUnsAg;
+sigmaCEs=EnergyUnsC;
 
 GCs=GCs./FCs;
 CCs=CCs./FCs;
@@ -55,11 +67,8 @@ sigmaCCs = sigmaCCs./FCs;
 
 
 
-m1=1.007276;
-mG=196.966-4.4858e-4*79-0.03343120468;
-mC=12-4.4858e-4*12;
 
-K2=@(theta,m2)((m1*cos(theta)+sqrt(m2^2-m1^2*sin(theta).^2))./(m1+m2)).^2;
+cs=@(theta,m,E) 1./(sin(theta/2)).^2.*1./(K2(theta,m).*E).^2;
 
 
 
@@ -76,7 +85,7 @@ hold on
 xlabel('Scattering Angle [deg]')
 ylabel('Scattering Energy [KeV]')
 title('Scattering on Carbon')
-plot(Thetas,350*K2(Thetas,mG),'linewidth',2)
+plot(Thetas,Ein*K2(Thetas,mG),'linewidth',2)
 
 figure
 errorbar(thetas,CEs,sigmaCEs,'r.','markersize',10)
@@ -84,7 +93,7 @@ hold on
 xlabel('Scattering Angle [deg]')
 ylabel('Scattering Energy [KeV]')
 title('Scattering on Carbon')
-plot(Thetas,350*K2(Thetas,mC),'linewidth',2)
+plot(Thetas,Ein*K2(Thetas,mC),'linewidth',2)
 
 
 figure
@@ -186,7 +195,10 @@ xlim([x2,x3])
 
 x = X;
 y = Y;
-yerr = Yerr;
+
+yerr = Yerr+(Yerr==0);
+
+
 higherIndex = x>x2;
 x = x(higherIndex);
 y = y(higherIndex);
@@ -197,7 +209,7 @@ x = x(lowerIndex);
 y = y(lowerIndex);
 yerr = yerr(lowerIndex);
 
-peakChannel = (peakValue-15.78)./0.76535;
+peakChannel = (peakValue-12.393)./0.76468;
 
 
 beta0 = [0,0,y(round(peakChannel(1))==x),peakChannel(1),5,y(round(peakChannel(2))==x),peakChannel(2),15];
@@ -226,12 +238,13 @@ P_Value = 1-chi2cdf(MSE*(length(y)-5),(length(y)-5));
 disp([name 'Fitted with p-value: ' num2str(pValue) ' with MSE: ' num2str(MSE)])
 
 
+c2E = @(x) x.*0.76468+12.393
 
-txt = text(beta(4),y(round(beta(4))==x)+10,['\leftarrow' num2str(beta(4)) '']);
+txt = text(beta(4),y(round(beta(4))==x)+10,['\leftarrow' num2str(c2E(beta(4))) '']);
 set(txt,'Rotation',90);
 set(txt,'FontSize',12);
 
-txt = text(beta(7),y(round(beta(7))==x)+10,['\leftarrow' num2str(beta(7)) '']);
+txt = text(beta(7),y(round(beta(7))==x)+10,['\leftarrow' num2str(c2E(beta(7))) '']);
 set(txt,'Rotation',90);
 set(txt,'FontSize',12);
 
