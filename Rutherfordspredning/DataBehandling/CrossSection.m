@@ -11,7 +11,7 @@ data = [];
 
 
 for i = 1:length(theta)
-    [X,Y,Yerr] =hisFraData(['..\Data\AngularDependency\' num2str(theta(i)) 'degree.asc']);
+    [X,Y,Yerr] = hisFraData(['..\Data\AngularDependency\' num2str(theta(i)) 'degree.asc']);
     data = [data, fitGaussInSpectrum(X,Y,Yerr,[num2str(theta(i)) ' degree'],peakValues{i},peakBorders{i})];
 end
 
