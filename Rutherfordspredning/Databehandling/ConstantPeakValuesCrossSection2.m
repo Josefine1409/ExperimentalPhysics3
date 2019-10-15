@@ -179,7 +179,7 @@ yerr = yerr(lowerIndex);
 peakChannel = (peakValue-12.393)./0.76468;
 
 
-beta0 = [0,0,y(round(peakChannel(1))==x),5,y(round(peakChannel(2))==x),15];
+beta0 = [0,0,y(round(peakChannel(1))==x),5,y(round(peakChannel(2))==x),15,peakChannel(2)];
 
 for i = 1:n
     plot([peakChannel(i),peakChannel(i)],[0,max(y)])
@@ -190,7 +190,7 @@ hold on
 w = 1./yerr.^2;
 w = ones(size(yerr));
 
-fitFun = @(beta,x) fitfunction(beta,peakChannel(1),peakChannel(2),x) 
+fitFun = @(beta,x) fitfunction(beta,peakChannel(1),x) 
 [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x,y,fitFun,beta0,'weights',w);
 beta(1);
 beta(2);
@@ -219,7 +219,7 @@ set(txt,'FontSize',12);
 % plot([beta(1)+us(1,1),beta(1)+us(1,1)],[0,max(y)])
 % plot([beta(1)-us(1,1),beta(1)-us(1,1)],[0,max(y)])
 
-peakChannelsFitted = [peakChannel(1),peakChannel(2)];
+peakChannelsFitted = [peakChannel(1),beta(7)];
 % peakUns(1) = us(1,1);
 ci = nlparci(beta,R,'jacobian',J,'alpha',0.35);
 % peakUns = [(ci(4,2)-ci(4,1))/2,(ci(7,2)-ci(7,1))/2];
@@ -240,11 +240,11 @@ countUns2 = sqrt(counts2+...
 
 
 data1 = [peakChannelsFitted(1);1;[counts1];[countUns1]];
-data2 = [peakChannelsFitted(2);1;[counts2];[countUns2]];
+data2 = [peakChannelsFitted(2);CovB(7,7);[counts2];[countUns2]];
 end
 
 
-function y = fitfunction(beta,p1,p2,x)
-    y = beta(3).*exp(-((x-p1)./(2.*beta(4))).^2)+beta(5).*exp(-((x-p2)./(2.*beta(6))).^2);
+function y = fitfunction(beta,p1,x)
+    y = beta(3).*exp(-((x-p1)./(2.*beta(4))).^2)+beta(5).*exp(-((x-beta(7))./(2.*beta(6))).^2);
     y =y';
 end

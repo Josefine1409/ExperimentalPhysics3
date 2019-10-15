@@ -1,6 +1,6 @@
 clear all; close all;clc;
 
-c2E = @(x) (x*0.76535+15.78)./1000
+c2E = @(x) (x*0.76535+12.393)./1000;
 Ein = 0.349
 
 
@@ -14,9 +14,9 @@ K2=@(theta,m2)((mH*cos(theta)+sqrt(m2^2-mH^2*sin(theta).^2))./(mH+m2)).^2;
 I = importfile('..\Data\Thickness\Sample1_0degree_480sec.asc');
 E = 1:length(I);
 Ierr = sqrt(I);
-
+figure
 peakBorders = [242,353;353,437];
-name = 'Sample1 0 degree'
+name = 'pos 1'
 data = fitGaussInSpectrum(E,I,Ierr,name,2,peakBorders);
 EOutC0 = c2E(data(1,1))
 EOutCErr0 = c2E(data(2,1))
@@ -28,8 +28,9 @@ E = 1:length(I);
 Ierr = sqrt(I);
 
 peakBorders = [242,353;380,475];
-name = 'Sample1 180 degree'
+name = 'pos 2'
 data = fitGaussInSpectrum(E,I,Ierr,name,2,peakBorders);
+legend('show')
 EOutC180 = c2E(data(1,1))
 EOutCErr180 = c2E(data(2,1))
 EOutAu180 = c2E(data(1,2))
@@ -47,9 +48,9 @@ XAuerr = sqrt((EOutCErr180^2+EOutCErr0^2)/((stoppingpowerAu(Ein)*K2(theta,mC)+st
 I = importfile('..\Data\Thickness\Sample2_0degree_480sec.asc');
 E = 1:length(I);
 Ierr = sqrt(I);
-
+figure
 peakBorders = [270,340;370,446];
-name = 'Sample2 0degree'
+name = 'pos 1'
 data = fitGaussInSpectrum(E,I,Ierr,name,2,peakBorders);
 EOutC0 = c2E(data(1,1))
 EOutCErr0 = c2E(data(2,1))
@@ -61,8 +62,10 @@ E = 1:length(I);
 Ierr = sqrt(I);
 
 peakBorders = [270,353;380,475];
-name = 'Sample2 180 degree'
+name = 'pos 2'
 data = fitGaussInSpectrum(E,I,Ierr,name,2,peakBorders);
+legend('show')
+
 EOutC180 = c2E(data(1,1))
 EOutCErr180 = c2E(data(2,1))
 EOutAu180 = c2E(data(1,2))
@@ -70,8 +73,7 @@ EOutAuErr180 = c2E(data(2,2))
 %%
 
 XC = (EOutAu180-EOutAu0)/(stoppingpowerC(Ein)*K2(theta,mAu)+stoppingpowerC(EOutAu0)./cos(pi-theta))
-
-XCerr = sqrt((EOutAuErr180^2+EOutAuErr0^2)/((stoppingpowerC(Ein)*K2(theta,mAu)+stoppingpowerC(EOutAu0)./cos(pi-theta))^2))
+XCerr = sqrt((EOutAuErr180^2+EOutAuErr0^2)./((stoppingpowerC(Ein)*K2(theta,mAu)+stoppingpowerC(EOutAu0)./cos(pi-theta))^2))
 
 
 XAu = (EOutC0-EOutC180)/(stoppingpowerAu(Ein)*K2(theta,mC)+stoppingpowerAu(EOutC180)./cos(pi-theta))
@@ -82,18 +84,24 @@ XAuerr = sqrt((EOutCErr180^2+EOutCErr0^2)/((stoppingpowerAu(Ein)*K2(theta,mC)+st
 
 
 
-function data = fitGaussInSpectrum(X,Y,Yerr,name,n,peakBorder)
-figure
+function data = fitGaussInSpectrum(X,Y,Yerr,Name,n,peakBorder)
+c2E = @(x) (x*0.76535+12.393);
+
+% figure
 hold on
-xlim([200,500])
+xlim(c2E([200,500]))
 ylim([0,max(Y(200:500))*1.1])
 
-histogram('BinEdges',[0,X(1:end)],'BinCounts',Y,'EdgeColor','none')
+histogram('BinEdges',c2E([0,X(1:end)]),'BinCounts',Y,'EdgeColor','none','displayName',['Spec. ' Name])
 
-xlabel('Channel number (Ch)')
+xlabel('Energy (keV)')
 ylabel('Counts (n)')
-set(gca,'FontSize',15) 
-title(name)
+set(gca,'FontSize',14) 
+% title(name)
+
+name = {'C','Ag'};
+shape = {'--','-.'};
+
 
 for i = 1:n
 
@@ -117,7 +125,8 @@ beta0 = [(x2+x3)/2,(x3-x2)/3,max(y)/2,0,20];
 
 w = 1./(yerr+1).^2;
 [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x',y,@fitfunction,beta0,'weights',w);
-plot(x,fitfunction(beta,x),'k--','linewidth',2)
+
+plot(c2E(x),fitfunction(beta,x),shape{i},'linewidth',2,'displayName',[name{i} ' fit'])
 us = CovB/MSE;
 mse =MSE;
 MSECount(i) = MSE;

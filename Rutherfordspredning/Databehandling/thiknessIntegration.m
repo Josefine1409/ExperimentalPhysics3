@@ -1,6 +1,6 @@
 clear all; close all;clc;
 
-c2E = @(x) (x*0.76535+15.78)./1000
+c2E = @(x) (x*0.76535+12.393)./1000
 Ein = 0.349
 
 mG=196.966-4.4858e-4*79-0.03343120468;
@@ -54,12 +54,13 @@ plot(xs,Eouts)
 
 
 function data = fitGaussInSpectrum(X,Y,Yerr,name,n,peakBorder)
+c2E = @(x) (x*0.76535+12.393)./1000;
 
 
 figure
-histogram('BinEdges',[0,X(1:end)],'BinCounts',Y,'EdgeColor','none')
+histogram('BinEdges',c2E([0,X(1:end)]),'BinCounts',Y,'EdgeColor','none')
 hold on
-xlabel('Channel number (Ch)')
+xlabel('Energy (keV)')
 ylabel('Counts (n)')
 set(gca,'FontSize',15) 
 title(name)
@@ -86,7 +87,7 @@ beta0 = [(x2+x3)/2,(x3-x2)/3,max(y)/2,0,20];
 
 w = 1./(yerr+1).^2;
 [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x',y,@fitfunction,beta0,'weights',w);
-plot(x,fitfunction(beta,x),'k--','linewidth',2)
+plot(c2E(x),fitfunction(beta,x),'k--','linewidth',2)
 us = CovB/MSE;
 mse =MSE;
 MSECount(i) = MSE;

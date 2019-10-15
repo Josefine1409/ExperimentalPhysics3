@@ -56,7 +56,7 @@ end
 %     [X,Y,Yerr] =hisFraData(filenames{i});
 %     data = [data, fitGaussInSpectrum(X,Y,Yerr,names{i},peakValues{i},peakBorders{i})];
 % end
-Es = linspace(50,400,1000);
+Es = linspace(100,400,1000);
 
 x =data(3,:);
 y = data(1,:);
@@ -178,9 +178,9 @@ pValue(i) = 1-chi2cdf(MSE*(length(y)-5),(length(y)-5));
 P_Value = 1-chi2cdf(MSE*(length(y)-5),(length(y)-5));
 
 
-txt = text(beta(1),max(y)+10,['\leftarrow' num2str(peakValue(i)) ' keV']);
-set(txt,'Rotation',90);
-set(txt,'FontSize',14);
+% txt = text(beta(1),max(y)+10,['\leftarrow' num2str(peakValue(i)) ' keV']);
+% set(txt,'Rotation',90);
+% set(txt,'FontSize',14);
 
 peakChannel(i) = beta(1,1);
 peakUns(i) = us(1,1);
