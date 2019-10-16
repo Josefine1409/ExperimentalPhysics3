@@ -1,5 +1,5 @@
 function [S] = stoppingpowerAu(E)
-    rho =19.30;
+    rho =19.32;
     A = load('AuStoppingPower.txt');
     Es = A(1:2:end,1);
     Ss = A(1:2:end,2)*rho*100;

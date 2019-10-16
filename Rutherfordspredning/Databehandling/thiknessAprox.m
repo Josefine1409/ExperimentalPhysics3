@@ -18,10 +18,10 @@ figure
 peakBorders = [242,353;353,437];
 name = 'pos 1'
 data = fitGaussInSpectrum(E,I,Ierr,name,2,peakBorders);
-EOutC0 = c2E(data(1,1))
-EOutCErr0 = c2E(data(2,1))
-EOutAu0 = c2E(data(1,2))
-EOutAuErr0 = c2E(data(2,2))
+EOutC0 = c2E(data(1,1));
+EOutCErr0 = c2E(data(2,1));
+EOutAu0 = c2E(data(1,2));
+EOutAuErr0 = c2E(data(2,2));
 
 I = importfile('..\Data\Thickness\Sample1_180degree_480sec.asc');
 E = 1:length(I);
@@ -31,18 +31,31 @@ peakBorders = [242,353;380,475];
 name = 'pos 2'
 data = fitGaussInSpectrum(E,I,Ierr,name,2,peakBorders);
 legend('show')
-EOutC180 = c2E(data(1,1))
-EOutCErr180 = c2E(data(2,1))
-EOutAu180 = c2E(data(1,2))
-EOutAuErr180 = c2E(data(2,2))
+EOutC180 = c2E(data(1,1));
+EOutCErr180 = c2E(data(2,1));
+EOutAu180 = c2E(data(1,2));
+EOutAuErr180 = c2E(data(2,2));
 %%
+SAu = @(E) stoppingpowerAu(E)
+SC = @(E) stoppingpowerC(E)
+
 
 XC = (EOutAu180-EOutAu0)/(stoppingpowerC(Ein)*K2(theta,mAu)+stoppingpowerC(EOutAu0)./cos(pi-theta))
 XCerr = sqrt((EOutAuErr180^2+EOutAuErr0^2)/((stoppingpowerC(Ein)*K2(theta,mAu)+stoppingpowerC(EOutAu0)./cos(pi-theta))^2))
+% 
+% 
+% XAu = (EOutC0-EOutC180)/(stoppingpowerAu(Ein)*K2(theta,mC)+stoppingpowerAu(EOutC180)./cos(pi-theta))
+% XAuerr = sqrt((EOutCErr180^2+EOutCErr0^2)/((stoppingpowerAu(Ein)*K2(theta,mC)+stoppingpowerAu(EOutC180)./cos(pi-theta))^2))
+% 
+% 
+% XC = (Ein*K2(theta,mC)-EOutC0)/(SC(Ein)*K2(theta,mC)+SC(EOutC0)/cos(pi-theta))
+% XAu = (Ein*K2(theta,mAu)-EOutAu180)/(SAu(Ein)*K2(theta,mAu)+SAu(EOutAu180)/cos(pi-theta))
+% 
+% 
+% XAu = (EOutC0-EOutC180-1.50e-7*(SC(EOutC180)-SC(EOutC0))./(2*cos(pi-theta)))/(SAu(Ein)*K2(theta,mC)+SAu(EOutC180)./cos(pi-theta))
+% XAu = (EOutC0-EOutC180-1.50e-7*(SC(EOutC0)-SC(EOutC180))./(2*cos(pi-theta)))/(SAu(Ein)*K2(theta,mC)+SAu(EOutC180)./cos(pi-theta))
 
 
-XAu = (EOutC0-EOutC180)/(stoppingpowerAu(Ein)*K2(theta,mC)+stoppingpowerAu(EOutC180)./cos(pi-theta))
-XAuerr = sqrt((EOutCErr180^2+EOutCErr0^2)/((stoppingpowerAu(Ein)*K2(theta,mC)+stoppingpowerAu(EOutC180)./cos(pi-theta))^2))
 %%
 
 I = importfile('..\Data\Thickness\Sample2_0degree_480sec.asc');
@@ -52,10 +65,10 @@ figure
 peakBorders = [270,340;370,446];
 name = 'pos 1'
 data = fitGaussInSpectrum(E,I,Ierr,name,2,peakBorders);
-EOutC0 = c2E(data(1,1))
-EOutCErr0 = c2E(data(2,1))
-EOutAu0 = c2E(data(1,2))
-EOutAuErr0 = c2E(data(2,2))
+EOutC0 = c2E(data(1,1));
+EOutCErr0 = c2E(data(2,1));
+EOutAu0 = c2E(data(1,2));
+EOutAuErr0 = c2E(data(2,2));
 
 I = importfile('..\Data\Thickness\Sample2_180degree_XXXsec.asc');
 E = 1:length(I);
@@ -66,10 +79,10 @@ name = 'pos 2'
 data = fitGaussInSpectrum(E,I,Ierr,name,2,peakBorders);
 legend('show')
 
-EOutC180 = c2E(data(1,1))
-EOutCErr180 = c2E(data(2,1))
-EOutAu180 = c2E(data(1,2))
-EOutAuErr180 = c2E(data(2,2))
+EOutC180 = c2E(data(1,1));
+EOutCErr180 = c2E(data(2,1));
+EOutAu180 = c2E(data(1,2));
+EOutAuErr180 = c2E(data(2,2));
 %%
 
 XC = (EOutAu180-EOutAu0)/(stoppingpowerC(Ein)*K2(theta,mAu)+stoppingpowerC(EOutAu0)./cos(pi-theta))
@@ -78,10 +91,20 @@ XCerr = sqrt((EOutAuErr180^2+EOutAuErr0^2)./((stoppingpowerC(Ein)*K2(theta,mAu)+
 
 XAu = (EOutC0-EOutC180)/(stoppingpowerAu(Ein)*K2(theta,mC)+stoppingpowerAu(EOutC180)./cos(pi-theta))
 XAuerr = sqrt((EOutCErr180^2+EOutCErr0^2)/((stoppingpowerAu(Ein)*K2(theta,mC)+stoppingpowerAu(EOutC180)./cos(pi-theta))^2))
-
-
-
-
+% 
+% 
+% XC = (Ein*K2(theta,mC)-EOutC0)/(SC(Ein)*K2(theta,mC)+SC(EOutC0)/cos(pi-theta))
+% XC = (EOutAu180-EOutAu0-2.50e-9*(SAu(EOutAu180)-SAu(EOutAu0)))/(stoppingpowerC(Ein)*K2(theta,mAu)+stoppingpowerC(EOutAu0)./cos(pi-theta))
+% XC = (EOutAu180-EOutAu0-2.50e-9*(SAu(EOutAu0)-SAu(EOutAu180)))/(stoppingpowerC(Ein)*K2(theta,mAu)+stoppingpowerC(EOutAu0)./cos(pi-theta))
+% 
+% 
+% XAu = (Ein*K2(theta,mAu)-EOutAu180)/(SAu(Ein)*K2(theta,mAu)+SAu(EOutAu180)/cos(pi-theta))
+% 
+% 
+% 
+% XAu = (EOutC0-EOutC180-2.50e-8*(SC(EOutC180)-SC(EOutC0))./(2*cos(pi-theta)))/(SAu(Ein)*K2(theta,mC)+SAu(EOutC180)./cos(pi-theta))
+% XAu = (EOutC0-EOutC180-2.50e-8*(SC(EOutC0)-SC(EOutC180))./(2*cos(pi-theta)))/(SAu(Ein)*K2(theta,mC)+SAu(EOutC180)./cos(pi-theta))
+% 
 
 
 function data = fitGaussInSpectrum(X,Y,Yerr,Name,n,peakBorder)
@@ -135,8 +158,8 @@ P_Value = 1-chi2cdf(MSE*(length(y)-5),(length(y)-5));
 
 peakChannel(i) = beta(1,1);
 peakUns(i) = us(1,1);
-ci = nlparci(beta,R,'jacobian',J,'alpha',0.35);
-peakUns(i) = (ci(1,2)-ci(1,1))/2;
+% ci = nlparci(beta,R,'jacobian',J,'alpha',0.35);
+% peakUns(i) = (ci(1,2)-ci(1,1))/2;
 
 end
 
