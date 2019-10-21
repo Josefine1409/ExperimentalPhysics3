@@ -1,0 +1,2 @@
+# Ignore file named `Ra226_ch000.txt`
+Ra226_ch000.txt
