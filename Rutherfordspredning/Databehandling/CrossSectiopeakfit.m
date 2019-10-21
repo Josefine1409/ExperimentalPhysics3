@@ -1,6 +1,8 @@
 clear all; close all;clc;
     
 Ein = 349
+Ein = 349.9
+
 c2E = @(x) x.*0.76468+12.393
 m1=1.007276;
 mG=196.966-4.4858e-4*79-0.03343120468;
@@ -17,8 +19,9 @@ peakBorders = {[390,480],     [380,490],     [380,480],     [350,460],     [340,
 thetas=[30:10:70 75 110:10:160]./180.*pi;
 
 for i = 1:length(thetas)
-    peakValues{i} = [Ein.*K2(thetas(i),mG),Ein.*K2(thetas(i),mC)];
+    peakValues{i} = [EoutNy(Ein,thetas(i),1),EoutNy(Ein,thetas(i),2)];
 end
+
 
 linFun =@(beta,x) (x-beta(2))/beta(1);
 dataAg = [];
@@ -155,14 +158,14 @@ cs=@(theta,m,E) 1./(sin(theta/2)).^4;
 
 Chi2TestGold = sum((GCs-betaG(1).*cs(thetas([3:1:12]),mG,Ein)-betaG(2)).^2./(sigmaGCs.^2)) % Chi i anden test
 nu = length(GCs)-1 %Antal frihedsgrader
-Signifikansniveau = 1-chi2cdf(Chi2TestGold,nu) % P værdi
+Signifikansniveau = 1-chi2cdf(Chi2TestGold,nu) % P vï¿½rdi
 TestN = Chi2TestGold/nu %Ca. test der burde give 1
 disp('---------------------')
 
 
 Chi2TestCarbon = sum((CCs-betaC(1).*cs(thetas([3:1:12]),mC,Ein)-betaC(2)).^2./(sigmaCCs.^2)) % Chi i anden test
 nu = length(GCs)-1 %Antal frihedsgrader
-Signifikansniveau = 1-chi2cdf(Chi2TestCarbon,nu) % P værdi
+Signifikansniveau = 1-chi2cdf(Chi2TestCarbon,nu) % P vï¿½rdi
 TestN = Chi2TestCarbon/nu %Ca. test der burde give 1
 disp('---------------------')
 
@@ -175,6 +178,7 @@ hold on
 xlabel('\theta [deg]')
 ylabel('Scattering Energy [KeV]')
 title('Scattering on Gold')
+plot(Thetas/pi*180,EoutNy(Ein,Thetas,1),'linewidth',2)
 plot(Thetas/pi*180,Ein*K2(Thetas,mG),'linewidth',2)
 set(gca,'FontSize',15) 
 xlim([theta(1),theta(end)])
@@ -188,6 +192,7 @@ hold on
 xlabel('\theta [deg]')
 ylabel('Scattering Energy [KeV]')
 title('Scattering on Carbon')
+plot(Thetas/pi*180,EoutNy(Ein,Thetas,2),'linewidth',2)
 plot(Thetas/pi*180,Ein*K2(Thetas,mC),'linewidth',2)
 set(gca,'FontSize',15) 
 xlim([theta(1),theta(end)])
@@ -284,7 +289,42 @@ saveas(fig,'CrossSectionCarbonLinearU1p.eps','epsc')
 
 
 %% Fit
+function eout = EoutNy(Ein,Theta,id)
+Ein = Ein/1000
+mG=196.966-4.4858e-4*79-0.03343120468;
+mC=12-4.4858e-4*12;
+m1=1.007276;
 
+TAu = 25e-10;
+TC = 250e-10;
+eout =[];
+m = [mG,mC];
+K2=@(theta)((m1*cos(theta)+sqrt(m(id)^2-m1^2*sin(theta).^2))./(m1+m(id))).^2;
+for theta = Theta;
+SC = stoppingpowerC(Ein);
+SAu = stoppingpowerAu(Ein);
+if (id==1)
+    Escatter = (Ein-TAu/2*SAu).*K2(theta);
+    SC = stoppingpowerC(Escatter);
+    SAu = stoppingpowerAu(Escatter);
+    if (theta<pi/2)
+        eout(end+1) = Escatter-(TAu./2.*SAu+TC.*SC)./norm(cos(theta));
+    else
+        eout(end+1) = Escatter-(TAu./2.*SAu)./norm(cos(theta));
+    end
+else
+    Escatter = (Ein-TAu*SAu-TC*SC).*K2(theta);
+    SC = stoppingpowerC(Escatter);
+    SAu = stoppingpowerAu(Escatter);
+    if (theta<pi/2)
+        eout(end+1) = Escatter-(TC/2.*SC)./norm(cos(theta));
+    else
+        eout(end+1) = Escatter-(TC/2.*SC+TAu.*SAu)./norm(cos(theta));
+    end
+end
+end
+eout = eout*1000;
+end
 
 
 
