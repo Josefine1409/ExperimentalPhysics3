@@ -1,6 +1,6 @@
 clear all; close all;clc;
-folderName = {'Aluminum','Lead','Cupper','Brass'};
-name = {'Al','Pb','Cu','Brass'};
+folderName = {'Aluminum','Lead','Brass','Cupper'};
+name = {'Al','Pb','Brass','Cu'};
 rho = [2.699e+00,1.135E+01,8.960e+00]
 mu_rho = [7.5055e-02,11.3663e-2,7.3103E-02]
 % mu_rho = [7.4642e-02,11.3663e-2,7.3103E-02]
@@ -13,7 +13,12 @@ plateThiknessLead(1) = 0;
 for i=1:length(deltaThiknessLead)
     plateThiknessLead(i+1) = sum(deltaThiknessLead(end-i+1:end));
 end
-plateThikness = {[0,10.11,20.22,30.34,40.46,50.55,60.65,70.79,80.9]./10,[plateThiknessLead]./10,[0,1.02,2.06,3.05,4.04,5.06,6.10,7.09,8.12,9.11]./10,[0,14.19,29.87,44.42]./10,[0,7.98,16.03,24.02]./10};
+plateThikness = {...
+    [0,10.11,20.22,30.34,40.46,50.55,60.65,70.79,80.9]./10,...
+    [plateThiknessLead]./10,...
+    [0,14.19,29.87,44.42]./10,...
+    [0,1.02,2.06,3.05,4.04,5.06,6.10,7.09,8.12,9.11]./10,...
+    [0,7.98,16.03,24.02]./10};
 plateThiknessUncertanty = 0.02;
 
 fig = figure(10)

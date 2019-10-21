@@ -8,9 +8,9 @@ peakValues =  {c2E([434,445]),c2E([434,431]),c2E([433,427]),c2E([433,410]),c2E([
 peakBorders = {[390,480],     [380,490],     [380,480],     [350,460],     [340,460],     [340,455],     [310,455],     [300,455],     [280,455],     [280,455],     [280,455],     [280,455]};
 
 linFun =@(beta,x) (x-beta(2))/beta(1);
+
 dataAg = [];
 dataC = [];
-c2E = @(x) (x*0.76535+15.78)./1000
 
 
 
@@ -38,15 +38,35 @@ thetas=[30:10:70 75 110:10:160]./180.*pi;
 ts=[300 300 300 300 350 600 600 600 600 600 600 600];
 FCs=[46449 51781 60300 65892 81962 34228 103355 80585 101501 106019 102580 37053];
 
+ts=[300 300 300 300 350 600 600 600 600 600 600 600];
+FCs=[46449 51781 60300 65892 81962 34228 103355 80585 101501 106019 102580 37053];
+
 GCs=CountsAg;
 CCs=CountsC;
-GEs=EnergyAg*1e+3;
-CEs=EnergyC*1e+3;
+GEs=EnergyAg;
+CEs=EnergyC;
+
+% guld = GCs(1);
+% GCs(1) = CCs(1);
+% CCs(1) = guld;
+% 
+% guldE = GEs(1);
+% GEs(1) = CEs(1);
+% CEs(1) = guldE;
 
 sigmaGCs=CountsUnsAg;
 sigmaCCs=CountsUnsC;
-sigmaGEs=EnergyUnsAg*1e+3;
-sigmaCEs=EnergyUnsC*1e+3;
+sigmaGEs=EnergyUnsAg;
+sigmaCEs=EnergyUnsC;
+
+% guldS = sigmaGCs(1);
+% sigmaGCs(1) = sigmaCCs(1);
+% sigmaCCs(1) = guldS;
+% 
+% guldES = sigmaGEs(1);
+% sigmaGEs(1) = sigmaCEs(1);
+% sigmaCEs(1) = guldES;
+
 
 GCs=GCs./FCs;
 CCs=CCs./FCs;
@@ -54,70 +74,136 @@ sigmaGCs = sigmaGCs./FCs;
 sigmaCCs = sigmaCCs./FCs;
 
 
-
-m1=1.007276;
-mG=196.966-4.4858e-4*79-0.03343120468;
-mC=12-4.4858e-4*12;
-
-K2=@(theta,m2)((m1*cos(theta)+sqrt(m2^2-m1^2*sin(theta).^2))./(m1+m2)).^2;
+GCs=GCs([3:11])
+CCs=CCs([3:1:11])
+sigmaGCs = sigmaGCs([3:1:11])
+sigmaCCs = sigmaCCs([3:1:11])
 
 
+cs=@(theta,m,E) 1./(sin(theta/2)).^2.*1./(K2(theta,m).*E).^2;
+cs=@(theta,m,E) 1./(sin(theta/2)).^4;
+% cs=@(theta,m,E) 1./(sin(theta/2)).^2.*1./(E).^2;
 
-[betaG,RG,JG,CovB,MSE]=nlinfit(thetas,GCs,@(C,thetas) C(1)*cs(thetas,mG,Ein)+C(2),[1,0]);
-[betaC,RC,JC,CovB,MSE]=nlinfit(thetas,CCs,@(C,thetas) C(1)*cs(thetas,mC,Ein)+C(2),[1,0]);
+
+% [betaG,RG,JG,CovB,MSE]=nlinfit(thetas,GCs,@(C,thetas) C(1)*cs(thetas,mG,Ein)+C(2),[1,0]);
+% % [betaC,RC,JC,CovB,MSE]=nlinfit(thetas,CCs,@(C,thetas) C(1)*cs(thetas,mC,Ein)+C(2),[1,0]);
+% [betaG,RG,JG,CovB,MSE]=nlinfit(thetas([1:5,7:11]),GCs,@(C,thetas) C(1)*cs(thetas,mG,Ein)+C(2),[1,0],'weights',1./sigmaGCs.^2);
+% [betaC,RC,JC,CovB,MSE]=nlinfit(thetas([1:5,7:11]),CCs,@(C,thetas) C(1)*cs(thetas,mC,Ein)+C(2),[1,0],'weights',1./sigmaCCs.^2);
+
+[betaG,RG,JG,CovB,MSEG]=nlinfit(thetas([3:1:11]),GCs,@(C,thetas) C(2)+ C(1)*cs(thetas,mG,Ein),[1,0]);
+[betaC,RC,JC,CovB,MSEC]=nlinfit(thetas([3:1:11]),CCs,@(C,thetas)C(2)+ C(1)*cs(thetas,mC,Ein),[1,0]);
+
+Chi2TestGold = sum((GCs-betaG(1).*cs(thetas([3:1:11]),mG,Ein)-betaG(2)).^2./(sigmaGCs.^2)) % Chi i anden test
+nu = length(GCs)-1 %Antal frihedsgrader
+Signifikansniveau = 1-chi2cdf(Chi2TestGold,nu) % P værdi
+TestN = Chi2TestGold/nu %Ca. test der burde give 1
+disp('---------------------')
 
 
+Chi2TestCarbon = sum((CCs-betaC(1).*cs(thetas([3:1:11]),mC,Ein)-betaC(2)).^2./(sigmaCCs.^2)) % Chi i anden test
+nu = length(GCs)-1 %Antal frihedsgrader
+Signifikansniveau = 1-chi2cdf(Chi2TestCarbon,nu) % P værdi
+TestN = Chi2TestCarbon/nu %Ca. test der burde give 1
+disp('---------------------')
 
-Thetas=linspace(thetas(1),thetas(end),1000);
 
-figure
-errorbar(thetas,GEs,sigmaGEs,'r.','markersize',10)
+Thetas=linspace(thetas(3),thetas(end),1000);
+
+fig = figure
+errorbar(theta(3:end),GEs(3:end),sigmaGEs(3:end),'r.','markersize',10)
 hold on
-xlabel('Scattering Angle [deg]')
+xlabel('\theta [deg]')
+ylabel('Scattering Energy [KeV]')
+title('Scattering on Gold')
+plot(Thetas/pi*180,Ein*K2(Thetas,mG),'linewidth',2)
+set(gca,'FontSize',15) 
+xlim([theta(1),theta(end)])
+
+fig= figure
+errorbar(theta(3:end),CEs(3:end),sigmaCEs(3:end),'r.','markersize',10)
+hold on
+xlabel('\theta [deg]')
 ylabel('Scattering Energy [KeV]')
 title('Scattering on Carbon')
-plot(Thetas,350*K2(Thetas,mG),'linewidth',2)
+plot(Thetas/pi*180,Ein*K2(Thetas,mC),'linewidth',2)
+set(gca,'FontSize',15) 
+xlim([theta(1),theta(end)])
 
-figure
-errorbar(thetas,CEs,sigmaCEs,'r.','markersize',10)
+fig = figure
+[Ypred,deltaY] = nlpredci(@(C,th) C(2)+C(1)*cs(th,mG,Ein),Thetas,betaG,RG,'jacobian',JG,'alpha',0.35);
+
 hold on
-xlabel('Scattering Angle [deg]')
-ylabel('Scattering Energy [KeV]')
-title('Scattering on Carbon')
-plot(Thetas,350*K2(Thetas,mC),'linewidth',2)
-
-
-figure
-[Ypred,deltaY] = nlpredci(@(C,th) C(1)*cs(th,mG,Ein)+C(2),Thetas,betaG,RG,'jacobian',JG,'alpha',0.35);
-
-errorbar(thetas,GCs,sigmaGCs,'r.','markersize',10)
-hold on
-xlabel('Scattering Angle')
+xlabel('\theta [Deg]')
 ylabel('Normed Counts')
 title('Scattering on Gold')
-plot(Thetas,Ypred,'linewidth',2)
+plot(Thetas/pi*180,Ypred,'linewidth',2)
+errorbar(theta([3:1:11]),GCs,sigmaGCs,'r.','markersize',10)
 
-plot(Thetas,Ypred+deltaY,'k--','linewidth',1)
-plot(Thetas,Ypred-deltaY,'k--','linewidth',1)
-legend('Fit','Data','Fit confidence','Location','southwest')
+plot(Thetas/pi*180,Ypred+deltaY,'k--','linewidth',1)
+plot(Thetas/pi*180,Ypred-deltaY,'k--','linewidth',1)
+legend('Fit','Data','Fit confidence')
+set(gca,'FontSize',15) 
+xlim([theta(1),theta(end)])
+
+fig = figure
+[Ypred,deltaY] = nlpredci(@(C,th)C(2)+ C(1)*cs(th,mC,Ein),Thetas,betaC,RC,'jacobian',JC,'alpha',0.35);
+
+hold on
+xlabel('\theta [deg]')
+ylabel('Normed Counts')
+title('Scattering on Carbon')
+plot(Thetas/pi*180,Ypred,'linewidth',2)
+errorbar(theta([3:1:11]),CCs,sigmaCCs,'r.','markersize',10)
+
+plot(Thetas/pi*180,Ypred+deltaY,'k--','linewidth',1)
+plot(Thetas/pi*180,Ypred-deltaY,'k--','linewidth',1)
+set(gca,'FontSize',15) 
+xlim([theta(1),theta(end)])
+
+
+legend('Fit','Data','Fit confidence')
+
+%%
+
+fig = figure
+ThetasLinG = 1./(sin(Thetas/2)).^4;
+thetasLinG = 1./(sin(theta([3:1:11])/180*pi/2)).^4;
+
+[Ypred,deltaY] = nlpredci(@(C,th)C(2)+ C(1)*th,ThetasLinG,betaG,RG,'jacobian',JG,'alpha',0.35);
+
+hold on
+xlabel('1/(sin^4(\theta/2))')
+ylabel('Normed Counts')
+title('Scattering on Gold')
+plot(ThetasLinG,Ypred,'linewidth',2)
+errorbar(thetasLinG,GCs,sigmaGCs,'r.','markersize',10)
+
+plot(ThetasLinG,Ypred+deltaY,'k--','linewidth',1)
+plot(ThetasLinG,Ypred-deltaY,'k--','linewidth',1)
+legend('Fit','Data','Fit confidence','Location','northwest')
+set(gca,'FontSize',15) 
+xlim([thetasLinG(end),thetasLinG(1)])
 
 
 figure
-[Ypred,deltaY] = nlpredci(@(C,th) C(1)*cs(th,mC,Ein)+C(2),Thetas,betaC,RC,'jacobian',JC,'alpha',0.35);
+ThetasLinC = 1./(sin(Thetas/2)).^4;
+thetasLinC = 1./(sin(theta([3:1:11])/180*pi/2)).^4;
+[Ypred,deltaY] = nlpredci(@(C,th) C(2)+C(1)*th,ThetasLinC,betaC,RC,'jacobian',JC,'alpha',0.35);
 
-errorbar(thetas,CCs,sigmaCCs,'r.','markersize',10)
 hold on
-xlabel('Scattering Angle [deg]')
+xlabel('1/(sin^4(\theta/2))')
 ylabel('Normed Counts')
 title('Scattering on Carbon')
-plot(Thetas,Ypred,'linewidth',2)
+plot(ThetasLinC,Ypred,'linewidth',2)
+errorbar(thetasLinC,CCs,sigmaCCs,'r.','markersize',10)
 
-plot(Thetas,Ypred+deltaY,'k--','linewidth',1)
-plot(Thetas,Ypred-deltaY,'k--','linewidth',1)
-legend('Fit','Data','Fit confidence','Location','southwest')
+plot(ThetasLinC,Ypred+deltaY,'k--','linewidth',1)
+plot(ThetasLinC,Ypred-deltaY,'k--','linewidth',1)
+set(gca,'FontSize',15) 
+xlim([thetasLinC(end),thetasLinC(1)])
 
 
-
+legend('Fit','Data','Fit confidence','Location','northwest')
 
 %%
 
