@@ -90,7 +90,7 @@ cs=@(theta,m,E) 1./(sin(theta/2)).^4;
 % [betaG,RG,JG,CovB,MSE]=nlinfit(thetas([1:5,7:11]),GCs,@(C,thetas) C(1)*cs(thetas,mG,Ein)+C(2),[1,0],'weights',1./sigmaGCs.^2);
 % [betaC,RC,JC,CovB,MSE]=nlinfit(thetas([1:5,7:11]),CCs,@(C,thetas) C(1)*cs(thetas,mC,Ein)+C(2),[1,0],'weights',1./sigmaCCs.^2);
 
-[betaG,RG,JG,CovB,MSEG]=nlinfit(thetas([3:1:11]),GCs,@(C,thetas) C(2)+ C(1)*cs(thetas,mG,Ein),[1,0]);
+[betaG,RG,JG,CovB,MSEG]=nlinfit(thetas([3:1:11]),GCs,@(C,thetas) C(2)+ C(1)*cs(thetas,mAu,Ein),[1,0]);
 [betaC,RC,JC,CovB,MSEC]=nlinfit(thetas([3:1:11]),CCs,@(C,thetas)C(2)+ C(1)*cs(thetas,mC,Ein),[1,0]);
 
 Chi2TestGold = sum((GCs-betaG(1).*cs(thetas([3:1:11]),mG,Ein)-betaG(2)).^2./(sigmaGCs.^2)) % Chi i anden test

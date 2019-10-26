@@ -19,7 +19,7 @@ peakBorders = {[390,480],     [380,490],     [380,480],     [350,460],     [340,
 thetas=[30:10:70 75 110:10:160]./180.*pi;
 
 for i = 1:length(thetas)
-    peakValues{i} = [Ein.*K2(thetas(i),mG),Ein.*K2(thetas(i),mC)];
+    peakValues{i} = [EoutNy(Ein,thetas(i),1),EoutNy(Ein,thetas(i),2)];
 end
 
 
