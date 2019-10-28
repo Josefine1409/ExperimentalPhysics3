@@ -80,7 +80,6 @@ for row=1:size(rawData, 1)
     end
 end
 
-
 %% Allocate imported array to column variable names
 Spectrum = cell2mat(raw(:, 1));
 

@@ -44,7 +44,7 @@ for i = 1:length(theta)
     signal = [X;Y'];
     center = (pb(1)+pb(2))/2;
     window= (-pb(1)+pb(2));
-    NumPeaks = 2;
+    NumPeaks = 3;
     peakshape = 1
     extra = ''
     NumTrials = 5;
@@ -315,7 +315,7 @@ if (id==1)
         eout(end+1) = Escatter-(TAu./2.*SAu)./norm(cos(theta));
     end
 else
-    Escatter = (Ein-TAu*SAu-TC/2*SC).*K2(theta);
+    Escatter = (Ein-TAu*SAu-TC*SC).*K2(theta);
     SC = stoppingpowerC(Escatter);
     SAu = stoppingpowerAu(Escatter);
     if (theta<pi/2)

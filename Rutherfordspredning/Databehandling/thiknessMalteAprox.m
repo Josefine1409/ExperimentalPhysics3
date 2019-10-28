@@ -1,6 +1,7 @@
 clear all; close all;clc;
 
 c2E = @(x) (x*0.76535+12.393)./1000;
+
 E0 = 0.349;
 
 
@@ -30,7 +31,7 @@ Ierr = sqrt(I);
 peakBorders = [242,353;380,475];
 name = 'samp1 pos 1';
 data = fitGaussInSpectrum(E,I,Ierr,name,2,peakBorders);
-legend('show')
+legend('show','location','northwest')
 E1C = c2E(data(1,1));
 E1CErr = (data(2,1))/0.76535/1000;
 E1Au = c2E(data(1,2));
@@ -74,7 +75,7 @@ Ierr = sqrt(I);
 peakBorders = [270,353;380,475];
 name = 'samp2 pos 1'
 data = fitGaussInSpectrum(E,I,Ierr,name,2,peakBorders);
-legend('show')
+legend('show','location','northwest')
 
 E1C = c2E(data(1,1));
 E1CErr = (data(2,1))/0.76535/1000;
@@ -102,8 +103,8 @@ c2E = @(x) (x*0.76535+12.393);
 
 % figure
 hold on
-xlim(c2E([200,500]))
-ylim([0,max(Y(200:500))*1.1])
+xlim(c2E([230,500]))
+ylim([0,max(Y(200:500))*1.4])
 
 histogram('BinEdges',c2E([0,X(1:end)]),'BinCounts',Y,'EdgeColor','none','displayName',['Spec. ' Name])
 
@@ -113,7 +114,7 @@ set(gca,'FontSize',14)
 % title(name)
 
 name = {'C','Ag'};
-shape = {'--','-.'};
+shape = {'k--','k-.'};
 
 
 for i = 1:n
