@@ -4,6 +4,8 @@ Ein = 349
 Ein = 349.9
 
 c2E = @(x) x.*0.76468+12.393
+c2E = @(x) x.*0.76675+11.5073
+
 m1=1.007276;
 mG=196.966-4.4858e-4*79-0.03343120468;
 mC=12-4.4858e-4*12;
@@ -44,11 +46,11 @@ for i = 1:length(theta)
     FitResults
     
     EnergyC(i) = c2E(FitResults(2,2));
-    EnergyUnsC(i) = (bootstrap(2,2+4))*0.76468;
+    EnergyUnsC(i) = (bootstrap(2,2+4))*0.76675;
     CountsC(i) = (FitResults(2,4));
     CountsUnsC(i) = (bootstrap(2,4+4));
     EnergyAg(i) = c2E(FitResults(1,2));
-    EnergyUnsAg(i) = (bootstrap(1,2+4))*0.76468;
+    EnergyUnsAg(i) = (bootstrap(1,2+4))*0.76675;
     CountsAg(i) = (FitResults(1,4));
     CountsUnsAg(i) = (bootstrap(1,4+4));
     
@@ -315,7 +317,7 @@ x = x(lowerIndex);
 y = y(lowerIndex);
 yerr = yerr(lowerIndex);
 
-peakChannel = (peakValue-12.393)./0.76468;
+peakChannel = (peakValue-11.5073)./0.76675;
 
 beta0 = [0,0,y(round(peakChannel(1))==x),peakChannel(1),5,y(round(peakChannel(2))==x),peakChannel(2),15];
 

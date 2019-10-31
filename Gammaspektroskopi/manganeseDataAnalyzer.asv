@@ -1,0 +1,35 @@
+clear all; close all; format compact; clc
+
+%% Import data and background
+[data, ~, headerlinesOut] = importdata("manganese/Mn56_Day1_ch000.txt");
+time = data.data(:,1);
+channelCount = data.data(:,2);
+
+% background
+
+%% Energy calibration
+%
+
+%% Histogram of data with background
+figure(1)
+hold on
+    xlim([0, max(channelCount)])
+    histogram(channelCount, 'BinWidth', 1)
+hold off
+
+%% Peak fitter
+
+function peakFitter(channelToFitMin, channelToFitMax)
+    % Only use data in
+    
+    % Fitting function
+        % N_f = @(W) alpha * (gamma_f / ((W - M)^2 * c^4 + (gamma^2 / 4)));
+        % Background linear
+    fun = @(x) c(1) * (c(2) / ((x - c(3))^2 * c^4 + (c(4)^2 / 4));
+
+    % Inputs to nlinfit
+    channelstoFit = channelToFitMin : channelToFitMax;
+    guess = ???;
+
+    outputFit = nlinfit(channelstoFit, channelCount, N_f, guess);
+end

@@ -43,6 +43,11 @@ for j = 1:2
 %         filenames{end+1} = ['H',num2str(i),'+.asc'];
 %         names{end+1} = [energy,', H',num2str(i),'+'];
         
+
+% Spectrum = importfile(filename)
+% X = 1:length(Spectrum);
+% Y = Spectrum;
+
         filename =  fullfile(['..\Data\Kalibrering\Initialenergi ' energy],['H',num2str(i),'+.asc'])
         [X,Y,Yerr] =hisFraData(filename);
         data = [data, fitGaussInSpectrum(X,Y,Yerr,[energy,', H',num2str(i),'+'],peakValues{i+(j-1)*3},peakBorders{i+(j-1)*3})];
