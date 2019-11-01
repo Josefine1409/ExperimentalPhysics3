@@ -29,7 +29,7 @@ function peakFitter(channelCount, channelToFitMin, channelToFitMax)
     % Fitting function
         % N_f = @(W) alpha * (gamma_f / ((W - M)^2 * c^4 + (gamma^2 / 4)));
         % Background linear
-    fun = @(x) c(1) * (c(2) / ((x - c(3))^2 * c^4 + (c(4)^2 / 4));
+    fun = @(x) c(1) * (c(2) / ((x - c(3))^2 * c^4 + (c(4)^2 / 4)));
 
     % Inputs to nlinfit
     channelsToFit = channelToFitMin : channelToFitMax;
