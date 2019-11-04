@@ -227,7 +227,8 @@ end
 Yerr = sqrt(Y) +(Y==0);
 
 end
-
+histogram
+histcounts
 %%
 % data har sturktur [peakChannel,peakUns,peakValue]
 

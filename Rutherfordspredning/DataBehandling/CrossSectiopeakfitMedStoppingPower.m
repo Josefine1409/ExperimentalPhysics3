@@ -37,7 +37,7 @@ for i = 1:length(theta)
     figure
     [X,Y,Yerr] = hisFraData(['..\Data\AngularDependency\' num2str(theta(i)) 'degree.asc']);
     peakValue = peakValues{i}
-    peakChannel = (peakValues{i}-12.393)./0.76468;
+    peakChannel = (peakValues{i}-11.5073)./0.76675;
 
     pb = peakBorders{i}
     start = [peakChannel(1),14.4,peakChannel(2),16.8]
