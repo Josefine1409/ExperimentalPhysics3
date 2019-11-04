@@ -59,12 +59,6 @@ sigma2 =       6.359 % (6.249, 6.469)
 c1 =      -1.733  %(-2.366, -1.1)
 c2 =       948.4  %(671.2, 1226)
 
-EAu2 = c2E(x01)
-EC2 = c2E(x02)
-
-
-E0Au2Err = -(437.2-437.7)/2*0.76675
-E0C2Err = -(433.8-434.4)/2*0.76675
 
 
 
@@ -102,14 +96,14 @@ i = 1
 
 [X,Y,Yerr] = hisFraData(['..\Data\AngularDependency\' num2str(theta(i)) 'degree.asc']);
 W = 1/Yerr.^2;
-peakValue = peakValues{i};
+peakValue = peakValues{i}
 peakChannel = (peakValues{i}-11.5073)./0.76675;
-pBorders = peakBorders{i};
-Xs = pBorders(1):pBorders(2);
-Ys = Y(Xs);
+pBorders = peakBorders{i}
+Xs = pBorders(1):pBorders(2)
+Ys = Y(Xs)
 
-pb = peakBorders{i};
-start = [peakChannel(1),14.4,peakChannel(2),16.8];
+pb = peakBorders{i}
+start = [peakChannel(1),14.4,peakChannel(2),16.8]
 
 figure
 histogram('BinEdges',[Xs(1)-1/2,Xs(1:end)+1/2],'BinCounts',Ys,'EdgeColor','none')
@@ -144,10 +138,9 @@ sigma2 =       3.909 % (2.976, 4.842)
 c1 =       17.94  %(9.353, 26.53)
 c2 =       -6169  %(-9900, -2438)
 
-EAu1 = c2E(x01)
-EC1 = c2E(x02)
-E0Au1Err = -(435- 435.7)/2*0.76675
-E0C1Err = -(433.4-434.6)/2*0.76675
+
+x011Err = -(435- 435.7)/2
+x021Err = -(433.4-434.6)/2
 
 
 a1Err =  -(3.426e+04-4.262e+04)/2

@@ -36,7 +36,7 @@ Res ={}
 for i = 1:length(theta)
     [X,Y,Yerr] = hisFraData(['..\Data\AngularDependency\' num2str(theta(i)) 'degree.asc']);
     peakValue = peakValues{i}
-    peakChannel = (peakValues{i}-11.5073)./0.76675;
+    peakChannel = (peakValues{i}-12.393)./0.76468;
 
     pb = peakBorders{i}
     start = [peakChannel(1),14.4,peakChannel(2),16.8]
@@ -44,7 +44,7 @@ for i = 1:length(theta)
     signal = [X;Y'];
     center = (pb(1)+pb(2))/2;
     window= (-pb(1)+pb(2));
-    NumPeaks = 3;
+    NumPeaks = 2;
     peakshape = 1
     extra = ''
     NumTrials = 5;
@@ -106,10 +106,47 @@ end
 ts=[300 300 300 300 350 600 600 600 600 600 600 600];
 FCs=[46449 51781 60300 65892 81962 34228 103355 80585 101501 106019 102580 37053];
 
+
+
+enA1 = 346.96
+enA1err = 0.26836
+enC1 = 344.35
+enC1err = 0.46005 
+
+counts1Au = 1.5367e+06
+countUns1A = 1.3623e+05
+counts1C = 3.5003e+05
+countUns1C = 3.2503e+05
+
+enA2 =  345.35
+enA2err = 0.19169
+enC2 = 344.28
+enC2err = 0.23002
+
+counts2Au = 1.7385e+05
+countUns2A = 34246
+counts2C = 3.8908e+05
+countUns2C = 47033
+
+
+
 GCs=CountsAg;
 CCs=CountsC;
 GEs=EnergyAg;
 CEs=EnergyC;
+
+GCs(1) = counts1Au
+CCs(1) = counts1C
+GEs(1) = enA1
+CEs(1) = enC1
+
+GCs(2) = counts2C
+CCs(2) = counts2Au
+GEs(2) = enC2
+CEs(2) = enA2
+
+
+
 
 % guld = GCs(1);
 % GCs(1) = CCs(1);
@@ -123,6 +160,18 @@ sigmaGCs=CountsUnsAg;
 sigmaCCs=CountsUnsC;
 sigmaGEs=EnergyUnsAg;
 sigmaCEs=EnergyUnsC;
+
+sigmaGCs(1)=countUns1A;
+sigmaCCs(1)=countUns1C;
+sigmaGEs(1)=enA1err;
+sigmaCEs(1)=enC1err;
+
+sigmaGCs(2)=countUns2C;
+sigmaCCs(2)=countUns2A;
+sigmaGEs(2)=enC2err;
+sigmaCEs(2)=enA2err;
+
+
 
 % guldS = sigmaGCs(1);
 % sigmaGCs(1) = sigmaCCs(1);
@@ -139,10 +188,10 @@ sigmaGCs = sigmaGCs./FCs;
 sigmaCCs = sigmaCCs./FCs;
 
 
-GCs=GCs([3:12])
-CCs=CCs([3:1:12])
-sigmaGCs = sigmaGCs([3:1:12])
-sigmaCCs = sigmaCCs([3:1:12])
+GCs=GCs([1:12])
+CCs=CCs([1:1:12])
+sigmaGCs = sigmaGCs([1:1:12])
+sigmaCCs = sigmaCCs([1:1:12])
 
 
 cs=@(theta,m,E) 1./(sin(theta/2)).^2.*1./(K2(theta,m).*E).^2;
@@ -155,27 +204,27 @@ cs=@(theta,m,E) 1./(sin(theta/2)).^4;
 % [betaG,RG,JG,CovB,MSE]=nlinfit(thetas([1:5,7:12]),GCs,@(C,thetas) C(1)*cs(thetas,mG,Ein)+C(2),[1,0],'weights',1./sigmaGCs.^2);
 % [betaC,RC,JC,CovB,MSE]=nlinfit(thetas([1:5,7:12]),CCs,@(C,thetas) C(1)*cs(thetas,mC,Ein)+C(2),[1,0],'weights',1./sigmaCCs.^2);
 
-[betaG,RG,JG,CovB,MSEG]=nlinfit(thetas([3:1:12]),GCs,@(C,thetas) C(2)+ C(1)*cs(thetas,mG,Ein),[1,0]);
-[betaC,RC,JC,CovB,MSEC]=nlinfit(thetas([3:1:12]),CCs,@(C,thetas)C(2)+ C(1)*cs(thetas,mC,Ein),[1,0]);
+[betaG,RG,JG,CovB,MSEG]=nlinfit(thetas([1:1:12]),GCs,@(C,thetas) C(2)+ C(1)*cs(thetas,mG,Ein),[1,0]);
+[betaC,RC,JC,CovB,MSEC]=nlinfit(thetas([1:1:12]),CCs,@(C,thetas)C(2)+ C(1)*cs(thetas,mC,Ein),[1,0]);
 
-Chi2TestGold = sum((GCs-betaG(1).*cs(thetas([3:1:12]),mG,Ein)-betaG(2)).^2./(sigmaGCs.^2)) % Chi i anden test
+Chi2TestGold = sum((GCs-betaG(1).*cs(thetas([1:1:12]),mG,Ein)-betaG(2)).^2./(sigmaGCs.^2)) % Chi i anden test
 nu = length(GCs)-1 %Antal frihedsgrader
 Signifikansniveau = 1-chi2cdf(Chi2TestGold,nu) % P v�rdi
 TestN = Chi2TestGold/nu %Ca. test der burde give 1
 disp('---------------------')
 
 
-Chi2TestCarbon = sum((CCs-betaC(1).*cs(thetas([3:1:12]),mC,Ein)-betaC(2)).^2./(sigmaCCs.^2)) % Chi i anden test
+Chi2TestCarbon = sum((CCs-betaC(1).*cs(thetas([1:1:12]),mC,Ein)-betaC(2)).^2./(sigmaCCs.^2)) % Chi i anden test
 nu = length(GCs)-1 %Antal frihedsgrader
 Signifikansniveau = 1-chi2cdf(Chi2TestCarbon,nu) % P v�rdi
 TestN = Chi2TestCarbon/nu %Ca. test der burde give 1
 disp('---------------------')
 
-
-Thetas=linspace(thetas(3),thetas(end),1000);
+%%
+Thetas=linspace(thetas(1),thetas(end),1000);
 
 fig = figure
-errorbar(theta(3:end),GEs(3:end),sigmaGEs(3:end),'r.','markersize',10)
+errorbar(theta(1:end),GEs(1:end),sigmaGEs(1:end),'r.','markersize',10)
 hold on
 xlabel('\theta [deg]')
 ylabel('Scattering Energy [KeV]')
@@ -185,11 +234,14 @@ plot(Thetas/pi*180,Ein*K2(Thetas,mG),'linewidth',2)
 set(gca,'FontSize',15) 
 xlim([theta(1),theta(end)])
 
-saveas(fig,'EnergyAngleGoldU1p.fig')
-saveas(fig,'EnergyAngleGoldU1p.eps','epsc')
+legend('Data Gold','Expected with stopping','Expected without stopping','Location','northwest')
+
+
+saveas(fig,'EnergyAngleGoldAll.fig')
+saveas(fig,'EnergyAngleGoldAll.eps','epsc')
 
 fig= figure
-errorbar(theta(3:end),CEs(3:end),sigmaCEs(3:end),'r.','markersize',10)
+errorbar(theta(1:end),CEs(1:end),sigmaCEs(1:end),'r.','markersize',10)
 hold on
 xlabel('\theta [deg]')
 ylabel('Scattering Energy [KeV]')
@@ -198,9 +250,11 @@ plot(Thetas/pi*180,EoutNy(Ein,Thetas,2),'linewidth',2)
 plot(Thetas/pi*180,Ein*K2(Thetas,mC),'linewidth',2)
 set(gca,'FontSize',15) 
 xlim([theta(1),theta(end)])
+legend('Data Carbon','Expected with stopping','Expected without stopping','Location','northwest')
 
-saveas(fig,'EnergyAngleCarbonU1p.fig')
-saveas(fig,'EnergyAngleCarbonU1p.eps','epsc')
+
+saveas(fig,'EnergyAngleCarbonAll.fig')
+saveas(fig,'EnergyAngleCarbonAll.eps','epsc')
 
 fig = figure
 [Ypred,deltaY] = nlpredci(@(C,th) C(2)+C(1)*cs(th,mG,Ein),Thetas,betaG,RG,'jacobian',JG,'alpha',0.35);
@@ -210,7 +264,7 @@ xlabel('\theta [Deg]')
 ylabel('Normed Counts')
 title('Scattering on Gold')
 plot(Thetas/pi*180,Ypred,'linewidth',2)
-errorbar(theta([3:1:12]),GCs,sigmaGCs,'r.','markersize',10)
+errorbar(theta([1:1:12]),GCs,sigmaGCs,'r.','markersize',10)
 
 plot(Thetas/pi*180,Ypred+deltaY,'k--','linewidth',1)
 plot(Thetas/pi*180,Ypred-deltaY,'k--','linewidth',1)
@@ -218,8 +272,8 @@ legend('Fit','Data','Fit confidence')
 set(gca,'FontSize',15) 
 xlim([theta(1),theta(end)])
 
-saveas(fig,'CrossSectionGoldU1p.fig')
-saveas(fig,'CrossSectionGoldU1p.eps','epsc')
+saveas(fig,'CrossSectionGoldAll.fig')
+saveas(fig,'CrossSectionGoldAll.eps','epsc')
 
 fig = figure
 [Ypred,deltaY] = nlpredci(@(C,th)C(2)+ C(1)*cs(th,mC,Ein),Thetas,betaC,RC,'jacobian',JC,'alpha',0.35);
@@ -229,7 +283,7 @@ xlabel('\theta [deg]')
 ylabel('Normed Counts')
 title('Scattering on Carbon')
 plot(Thetas/pi*180,Ypred,'linewidth',2)
-errorbar(theta([3:1:12]),CCs,sigmaCCs,'r.','markersize',10)
+errorbar(theta([1:1:12]),CCs,sigmaCCs,'r.','markersize',10)
 
 plot(Thetas/pi*180,Ypred+deltaY,'k--','linewidth',1)
 plot(Thetas/pi*180,Ypred-deltaY,'k--','linewidth',1)
@@ -239,14 +293,14 @@ xlim([theta(1),theta(end)])
 
 legend('Fit','Data','Fit confidence')
 
-saveas(fig,'CrossSectionCarbonU1p.fig')
-saveas(fig,'CrossSectionCarbonU1p.eps','epsc')
+saveas(fig,'CrossSectionCarbonAll.fig')
+saveas(fig,'CrossSectionCarbonAll.eps','epsc')
 
 %%
 
 fig = figure
 ThetasLinG = 1./(sin(Thetas/2)).^4;
-thetasLinG = 1./(sin(theta([3:1:12])/180*pi/2)).^4;
+thetasLinG = 1./(sin(theta([1:1:12])/180*pi/2)).^4;
 
 [Ypred,deltaY] = nlpredci(@(C,th)C(2)+ C(1)*th,ThetasLinG,betaG,RG,'jacobian',JG,'alpha',0.35);
 
@@ -264,12 +318,12 @@ set(gca,'FontSize',15)
 xlim([thetasLinG(end),thetasLinG(1)])
 
 
-saveas(fig,'CrossSectionGoldLinearU1p.fig')
-saveas(fig,'CrossSectionGoldLinearU1p.eps','epsc')
+saveas(fig,'CrossSectionGoldLinearAll.fig')
+saveas(fig,'CrossSectionGoldLinearAll.eps','epsc')
 
 fig = figure
 ThetasLinC = 1./(sin(Thetas/2)).^4;
-thetasLinC = 1./(sin(theta([3:1:12])/180*pi/2)).^4;
+thetasLinC = 1./(sin(theta([1:1:12])/180*pi/2)).^4;
 [Ypred,deltaY] = nlpredci(@(C,th) C(2)+C(1)*th,ThetasLinC,betaC,RC,'jacobian',JC,'alpha',0.35);
 
 hold on
@@ -286,47 +340,12 @@ xlim([thetasLinC(end),thetasLinC(1)])
 
 
 legend('Fit','Data','Fit confidence','Location','northwest')
-saveas(fig,'CrossSectionCarbonLinearU1p.fig')
-saveas(fig,'CrossSectionCarbonLinearU1p.eps','epsc')
+saveas(fig,'CrossSectionCarbonLinearAll.fig')
+saveas(fig,'CrossSectionCarbonLinearAll.eps','epsc')
 
 
 %% Fit
-function eout = EoutNy(Ein,Theta,id)
-Ein = Ein/1000
-mG=196.966-4.4858e-4*79-0.03343120468;
-mC=12-4.4858e-4*12;
-m1=1.007276;
 
-TAu = 25e-10;
-TC = 250e-10;
-eout =[];
-m = [mG,mC];
-K2=@(theta)((m1*cos(theta)+sqrt(m(id)^2-m1^2*sin(theta).^2))./(m1+m(id))).^2;
-for theta = Theta;
-SC = stoppingpowerC(Ein);
-SAu = stoppingpowerAu(Ein);
-if (id==1)
-    Escatter = (Ein-TAu/2*SAu).*K2(theta);
-    SC = stoppingpowerC(Escatter);
-    SAu = stoppingpowerAu(Escatter);
-    if (theta<pi/2)
-        eout(end+1) = Escatter-(TAu./2.*SAu+TC.*SC)./norm(cos(theta));
-    else
-        eout(end+1) = Escatter-(TAu./2.*SAu)./norm(cos(theta));
-    end
-else
-    Escatter = (Ein-TAu*SAu-TC*SC).*K2(theta);
-    SC = stoppingpowerC(Escatter);
-    SAu = stoppingpowerAu(Escatter);
-    if (theta<pi/2)
-        eout(end+1) = Escatter-(TC/2.*SC)./norm(cos(theta));
-    else
-        eout(end+1) = Escatter-(TC/2.*SC+TAu.*SAu)./norm(cos(theta));
-    end
-end
-end
-eout = eout*1000;
-end
 
 
 

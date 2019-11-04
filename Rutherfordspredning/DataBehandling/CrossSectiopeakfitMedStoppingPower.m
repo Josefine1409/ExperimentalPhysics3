@@ -173,7 +173,7 @@ ylabel('Scattering Energy [KeV]')
 title('Scattering on Carbon')
 plot(Thetas/pi*180,EoutNy(Ein,Thetas,2),'linewidth',2)
 plot(Thetas/pi*180,Ein*K2(Thetas,mC),'linewidth',2)
-
+%%
 % 
 % figure
 % [Ypred,deltaY] = nlpredci(@(C,th) C(1)*cs(th,mG,Ein)+C(2),Thetas,betaG,RG,'jacobian',JG,'alpha',0.35);
@@ -204,6 +204,7 @@ plot(Thetas/pi*180,Ein*K2(Thetas,mC),'linewidth',2)
 % plot(Thetas,Ypred-deltaY,'k--','linewidth',1)
 % legend('Fit','Data','Fit confidence','Location','southwest')
 
+%%
 figure
 [Ypred,deltaY] = nlpredci(@(C,th) C(1)*cs(th,mG,Ein)+C(2),Thetas,betaG,RG,'jacobian',JG,'alpha',0.35);
 

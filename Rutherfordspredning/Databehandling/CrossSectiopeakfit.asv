@@ -36,7 +36,7 @@ Res ={}
 for i = 1:length(theta)
     [X,Y,Yerr] = hisFraData(['..\Data\AngularDependency\' num2str(theta(i)) 'degree.asc']);
     peakValue = peakValues{i}
-    peakChannel = (peakValues{i}-11.5073)./0.76675;
+    peakChannel = (peakValues{i}-12.393)./0.76468;
 
     pb = peakBorders{i}
     start = [peakChannel(1),14.4,peakChannel(2),16.8]
@@ -44,7 +44,7 @@ for i = 1:length(theta)
     signal = [X;Y'];
     center = (pb(1)+pb(2))/2;
     window= (-pb(1)+pb(2));
-    NumPeaks = 3;
+    NumPeaks = 2;
     peakshape = 1
     extra = ''
     NumTrials = 5;
@@ -185,6 +185,9 @@ plot(Thetas/pi*180,Ein*K2(Thetas,mG),'linewidth',2)
 set(gca,'FontSize',15) 
 xlim([theta(1),theta(end)])
 
+legend('Data Gold','Expected with stopping','Fit confidence','Location','northwest')
+
+
 saveas(fig,'EnergyAngleGoldU1p.fig')
 saveas(fig,'EnergyAngleGoldU1p.eps','epsc')
 
@@ -315,7 +318,7 @@ if (id==1)
         eout(end+1) = Escatter-(TAu./2.*SAu)./norm(cos(theta));
     end
 else
-    Escatter = (Ein-TAu*SAu-TC*SC).*K2(theta);
+    Escatter = (Ein-TAu*SAu-TC/2*SC).*K2(theta);
     SC = stoppingpowerC(Escatter);
     SAu = stoppingpowerAu(Escatter);
     if (theta<pi/2)
