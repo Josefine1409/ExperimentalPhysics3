@@ -37,7 +37,7 @@ for i = 1:length(theta)
     figure
     [X,Y,Yerr] = hisFraData(['..\Data\AngularDependency\' num2str(theta(i)) 'degree.asc']);
     peakValue = peakValues{i}
-    peakChannel = (peakValues{i}-12.393)./0.76468;
+    peakChannel = (peakValues{i}-11.5073)./0.76675;
 
     pb = peakBorders{i}
     start = [peakChannel(1),14.4,peakChannel(2),16.8]
@@ -173,7 +173,7 @@ ylabel('Scattering Energy [KeV]')
 title('Scattering on Carbon')
 plot(Thetas/pi*180,EoutNy(Ein,Thetas,2),'linewidth',2)
 plot(Thetas/pi*180,Ein*K2(Thetas,mC),'linewidth',2)
-
+%%
 % 
 % figure
 % [Ypred,deltaY] = nlpredci(@(C,th) C(1)*cs(th,mG,Ein)+C(2),Thetas,betaG,RG,'jacobian',JG,'alpha',0.35);
@@ -204,6 +204,7 @@ plot(Thetas/pi*180,Ein*K2(Thetas,mC),'linewidth',2)
 % plot(Thetas,Ypred-deltaY,'k--','linewidth',1)
 % legend('Fit','Data','Fit confidence','Location','southwest')
 
+%%
 figure
 [Ypred,deltaY] = nlpredci(@(C,th) C(1)*cs(th,mG,Ein)+C(2),Thetas,betaG,RG,'jacobian',JG,'alpha',0.35);
 

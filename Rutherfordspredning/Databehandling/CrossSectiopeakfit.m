@@ -106,6 +106,42 @@ end
 ts=[300 300 300 300 350 600 600 600 600 600 600 600];
 FCs=[46449 51781 60300 65892 81962 34228 103355 80585 101501 106019 102580 37053];
 
+
+enA2 = 437.5
+enA2err = 0.5 
+enC2 = 434.1
+enC2err = 0.5 
+
+counts2Au = 1.7385e+05
+countUns2Ai = 68491
+
+counts2C = 3.8908e+05
+countUns2C = 94067
+
+enA1 = 346.96
+enA1err = 0.26836
+enC1 = 344.35
+enC1err = 0.46005 
+
+counts1Au = 1.5367e+06
+countUns1Ai = 1.3623e+05
+
+counts1C = 3.5003e+05
+countUns1C = 3.2503e+05
+
+enA2 =  345.35
+enA2err = 0.19169
+enC2 = 344.28
+enC2err = 0.23002
+
+counts2Au = 1.7385e+05
+countUns2Ai = 34246
+
+counts2C = 3.8908e+05
+countUns2C = 47033
+
+
+
 GCs=CountsAg;
 CCs=CountsC;
 GEs=EnergyAg;
@@ -185,6 +221,9 @@ plot(Thetas/pi*180,Ein*K2(Thetas,mG),'linewidth',2)
 set(gca,'FontSize',15) 
 xlim([theta(1),theta(end)])
 
+legend('Data Gold','Expected with stopping','Expected without stopping','Location','northwest')
+
+
 saveas(fig,'EnergyAngleGoldU1p.fig')
 saveas(fig,'EnergyAngleGoldU1p.eps','epsc')
 
@@ -198,6 +237,8 @@ plot(Thetas/pi*180,EoutNy(Ein,Thetas,2),'linewidth',2)
 plot(Thetas/pi*180,Ein*K2(Thetas,mC),'linewidth',2)
 set(gca,'FontSize',15) 
 xlim([theta(1),theta(end)])
+legend('Data Carbon','Expected with stopping','Expected without stopping','Location','northwest')
+
 
 saveas(fig,'EnergyAngleCarbonU1p.fig')
 saveas(fig,'EnergyAngleCarbonU1p.eps','epsc')
