@@ -60,7 +60,7 @@ for j = 1:(floor(n/DeltaN))
     E = c2E(chN);
     Eedges = c2E(edges-1/2);
     decays = counts2Decay(N,E);
-    decaysUs = countsUs2Decay(N,sqrt(E),E);
+    decaysUs = countsUs2Decay(N,sqrt(N),E);
     
     %%Fit
     Nus = sqrt(N) + (N==0);
@@ -70,28 +70,27 @@ for j = 1:(floor(n/DeltaN))
     
     fitfunction = @(beta,x) beta(3).*exp(-((x-beta(1))./(beta(2))).^2./2)+beta(4).*x+beta(5);
     [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(chN,decays,fitfunction,beta0,'weights',weights);
-    
     ci = nlparci(beta,R,'jacobian',J,'alpha',0.35);
-    sigmaUs = (ci(2,2)-ci(2,1))/2;
-    heightUs = (ci(3,2)-ci(3,1))/2;
+    sigmaVar = (ci(2,2)-ci(2,1))/2;
+    heightVar = (ci(3,2)-ci(3,1))/2;
     
     Epeak = c2E(beta(1));
     
     counts = sqrt(2*pi)*beta(3)*beta(2);
-    countsUs = sqrt(...
-        (sqrt(2*pi)*beta(3)*sigmaUs).^2 +...
-        (sqrt(2*pi)*heightUs*beta(2)).^2);
-
-    
-%     us = CovB/MSE;
-%     sigmaUs = us(2,2);
-%     heightUs = us(3,3);
-%     covarians = us(2,3);
 %     countsUs = sqrt(...
 %         (sqrt(2*pi)*beta(3)*sigmaUs).^2 +...
-%         (sqrt(2*pi)*heightUs*beta(2)).^2+...
-%         4*pi*beta(3)*beta(2)*covarians);
-%     
+%         (sqrt(2*pi)*heightUs*beta(2)).^2);
+
+    
+    us = CovB/MSE;
+    sigmaVar = us(2,2);
+    heightVar = us(3,3);
+    covarians = us(2,3);
+    countsUs = sqrt(...
+        (sqrt(2*pi)*beta(3)).^2*sigmaVar +...
+        (sqrt(2*pi)*beta(2)).^2*heightVar+...
+        4*pi*beta(3)*beta(2)*covarians);
+    
 %     totDecay(j) = counts2Decay(counts,Epeak);
 %     totDecayUs(j) = countsUs2Decay(counts,countsUs,Epeak);
       totDecay(j) = counts;
@@ -116,12 +115,28 @@ th = t/(10^8*60*60) +startTime(i)/(60*60);
 deltaTh = deltaT/(10^8*60*60);
 
 
-dDecay_dt =totDecay./deltaTh;
+dDecay_dt = totDecay./deltaTh;
 % Hvordan får jeg usikkerhed fra at jeg intigrere over tid?
 dDecayUs_dt =totDecayUs./deltaTh;
 
+figure;
+hold on
+xlabel('t [h]')
+ylabel('Decays pr hour [1/h]')
+set(gca,'FontSize',15) 
+errorbar(th,dDecay_dt,dDecayUs_dt,'.');
+
+%fjerner et punkt som svare til påfyldning af detecroen
+if(i == 4)
+    th = th([1:17 19:end])
+    deltaTh = deltaTh([1:17 19:end])
+    dDecay_dt = dDecay_dt([1:17 19:end])
+    dDecayUs_dt = dDecayUs_dt([1:17 19:end])
+end
+
+
 weights = 1./dDecayUs_dt.^2;
-beta0 =[2.5,dDecay_dt(1)];
+beta0 = [2.5,dDecay_dt(1)];
 fitfunction = @(beta,x) beta(2).*exp(-x./beta(1));
 [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(th,dDecay_dt,fitfunction,beta0,'weights',weights);
 
@@ -150,12 +165,10 @@ tauUs = (ci(1,2)-ci(1,1))/2
 halftime = tau*log(2)
 halftimeUs = tauUs*log(2)
 
-figure;
-hold on
-xlabel('t [h]')
-ylabel('Decays pr hour [1/h]')
-set(gca,'FontSize',15) 
-errorbar(th,dDecay_dt,dDecayUs_dt,'.');
+
+
+
+
 plot(th,fitfunction(beta,th),'-.','linewidth',1)
 
 JhList(i) = Jh
