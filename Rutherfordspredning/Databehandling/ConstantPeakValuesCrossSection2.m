@@ -1,7 +1,7 @@
 clear all; close all;clc;
     
 Ein = 349.5
-c2E = @(x) x.*0.76468+12.393
+c2E = @(x) x.*0.76675+11.5073
 m1=1.007276;
 mG=196.966-4.4858e-4*79-0.03343120468;
 mC=12-4.4858e-4*12;
@@ -35,13 +35,13 @@ for i = 1:length(theta)
 end
 %%
 EnergyC = c2E(dataC(1,:));
-EnergyUnsC = c2E(dataC(2,:));
-CountsC = c2E(dataC(3,:));
-CountsUnsC = c2E(dataC(4,:));
+EnergyUnsC = (dataC(2,:))*0.76675;
+CountsC = (dataC(3,:));
+CountsUnsC = (dataC(4,:));
 EnergyAg = c2E(dataAg(1,:));
-EnergyUnsAg = c2E(dataAg(2,:));
-CountsAg = c2E(dataAg(3,:));
-CountsUnsAg = c2E(dataAg(4,:));
+EnergyUnsAg = (dataAg(2,:))*0.76675;
+CountsAg = (dataAg(3,:));
+CountsUnsAg = (dataAg(4,:));
 
 
 %% Maltekode
@@ -227,20 +227,20 @@ ci = nlparci(beta,R,'jacobian',J,'alpha',0.35);
 
 counts1 = abs(2*sqrt(pi)*beta(3)*beta(4));
 countUns1 = sqrt(counts1+...
-    (2*sqrt(pi)*beta(3)).^2*us(4,4).^2+...
-    (2*sqrt(pi)*beta(4)).^2*us(3,3).^2+...
+    (2*sqrt(pi)*beta(3)).^2*us(4,4)+...
+    (2*sqrt(pi)*beta(4)).^2*us(3,3)+...
     abs(2.*(2*sqrt(pi)*beta(3)).*(2*sqrt(pi)*beta(4))*us(3,4)));
 
 counts2 = abs(2*sqrt(pi)*beta(5)*beta(6));
 countUns2 = sqrt(counts2+...
-    (2*sqrt(pi)*beta(5)).^2*us(6,6).^2+...
-    (2*sqrt(pi)*beta(6)).^2*us(5,5).^2+...
+    (2*sqrt(pi)*beta(5)).^2*us(6,6)+...
+    (2*sqrt(pi)*beta(6)).^2*us(5,5)+...
     abs(2.*(2*sqrt(pi)*beta(5)).*(2*sqrt(pi)*beta(6))*us(5,6)));
 
 
 
 data1 = [peakChannelsFitted(1);1;[counts1];[countUns1]];
-data2 = [peakChannelsFitted(2);CovB(7,7);[counts2];[countUns2]];
+data2 = [peakChannelsFitted(2);sqrt(CovB(7,7));[counts2];[countUns2]];
 end
 
 

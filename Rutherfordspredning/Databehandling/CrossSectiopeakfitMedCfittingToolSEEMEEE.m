@@ -4,7 +4,9 @@ Ein = 349
 Ein = 349.9
 
 c2E = @(x) x.*0.76468+12.393
-c2E = @(x) x.*0.76675+11.5073
+c2Eus =@(x,xUs) sqrt(xUs.^2*0.76468+0.2^2+x^2*0.0007^2)
+% c2E = @(x) x.*0.76675+11.5073
+
 
 m1=1.007276;
 mG=196.966-4.4858e-4*79-0.03343120468;
@@ -60,11 +62,11 @@ for i = 1:length(theta)
     FitResults
     
     EnergyC(i) = c2E(FitResults(2,2));
-    EnergyUnsC(i) = (bootstrap(2,2+4))*0.76675;
+    EnergyUnsC(i) = c2Eus(FitResults(2,2),bootstrap(2,2+4));
     CountsC(i) = (FitResults(2,5));
     CountsUnsC(i) = (bootstrap(2,5+4));
     EnergyAg(i) = c2E(FitResults(1,2));
-    EnergyUnsAg(i) = (bootstrap(1,2+4))*0.76675;
+    EnergyUnsAg(i) = c2Eus(FitResults(1,2),bootstrap(1,2+4));
     CountsAg(i) = (FitResults(1,5));
     CountsUnsAg(i) = (bootstrap(1,5+4));
     
@@ -105,7 +107,7 @@ end
 
 ts=[300 300 300 300 350 600 600 600 600 600 600 600];
 FCs=[46449 51781 60300 65892 81962 34228 103355 80585 101501 106019 102580 37053];
-
+FCsUs = sqrt(FCs)
 
 
 enA1 = 346.96
@@ -184,8 +186,8 @@ sigmaCEs(2)=enA2err;
 
 GCs=GCs./FCs;
 CCs=CCs./FCs;
-sigmaGCs = sigmaGCs./FCs;
-sigmaCCs = sigmaCCs./FCs;
+sigmaGCs = sqrt((sigmaGCs./FCs).^2+(GCs./FC.^2.*FCsUs).^2);
+sigmaCCs = sqrt((sigmaCCs./FCs).^2+(CCs./FC.^2.*FCsUs).^2);
 
 
 GCs=GCs([1:12])
