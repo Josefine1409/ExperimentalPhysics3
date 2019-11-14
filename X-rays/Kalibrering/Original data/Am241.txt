@@ -1,3 +1,9 @@
+Filename:  C:\Users\au576929\Documents\ExperimentalPhysics3\X-rays\Kalibrering\Am241.mca
+Description:  
+TimeStamp:  11/11/2019 12:00:51
+
+Spectral Data Information
+Channel	Data
 0	0
 1	0
 2	0

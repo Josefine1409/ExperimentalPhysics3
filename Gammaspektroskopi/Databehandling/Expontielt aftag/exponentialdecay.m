@@ -13,7 +13,7 @@ counts2Decay = @(counts,E) counts./rho(E) ;
 countsUs2Decay =@(counts,countsUs,E) sqrt((countsUs./rho(E)).^2+(counts./rho(E).^2.*rhoUs(E)));
 
 %precent of decay
-BR = 1;
+BR = 0.9882;
 BRUs = 0;
 
 filenames = {'Mn56_Day1_ch000.txt','Mn56_Day2_ch000.txt','Mn56_Day3_2detectors_ch000.txt','Mn56_Day3_2detectors_ch002.txt'};
