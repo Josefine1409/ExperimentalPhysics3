@@ -1,7 +1,7 @@
 %!PS-Adobe-3.0 EPSF-3.0
-%%Creator: (MATLAB, The Mathworks, Inc. Version 9.2.0.556344 \(R2017a\). Operating System: Windows 8)
+%%Creator: (MATLAB, The Mathworks, Inc. Version 9.7.0.1216025 \(R2019b\) Update 1. Operating System: Windows 10)
 %%Title: ./CrossSectionGoldAllNlin.eps
-%%CreationDate: 2019-11-09T14:15:16
+%%CreationDate: 2019-11-11T12:19:36
 %%Pages: (atend)
 %%BoundingBox:    13     0   392   309
 %%LanguageLevel: 3
@@ -13,24 +13,24 @@
 /bd{bind def}bind def
 /ld{load def}bd
 /GR/grestore ld
-/M/moveto ld
-/LJ/setlinejoin ld
+/GS/gsave ld
+/RM/rmoveto ld
 /C/curveto ld
-/f/fill ld
-/LW/setlinewidth ld
-/GC/setgray ld
 /t/show ld
-/N/newpath ld
-/CT/concat ld
-/cp/closepath ld
-/S/stroke ld
 /L/lineto ld
+/ML/setmiterlimit ld
+/CT/concat ld
+/f/fill ld
+/N/newpath ld
+/S/stroke ld
 /CC/setcmykcolor ld
 /A/ashow ld
-/GS/gsave ld
+/cp/closepath ld
 /RC/setrgbcolor ld
-/RM/rmoveto ld
-/ML/setmiterlimit ld
+/LJ/setlinejoin ld
+/GC/setgray ld
+/LW/setlinewidth ld
+/M/moveto ld
 /re {4 2 roll M
 1 index 0 rlineto
 0 exch rlineto
@@ -197,20 +197,20 @@ b4_Inc_state restore
 } bd
 %%EndResource
 %FOPBeginFontDict
-%%IncludeResource: font Courier-Bold
-%%IncludeResource: font Helvetica
-%%IncludeResource: font Courier-BoldOblique
 %%IncludeResource: font Courier-Oblique
-%%IncludeResource: font Times-Roman
-%%IncludeResource: font Helvetica-BoldOblique
-%%IncludeResource: font Helvetica-Bold
+%%IncludeResource: font Courier-BoldOblique
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font ZapfDingbats
+%%IncludeResource: font Symbol
+%%IncludeResource: font Helvetica
 %%IncludeResource: font Helvetica-Oblique
-%%IncludeResource: font Times-BoldItalic
-%%IncludeResource: font Courier
+%%IncludeResource: font Helvetica-Bold
+%%IncludeResource: font Helvetica-BoldOblique
+%%IncludeResource: font Times-Roman
 %%IncludeResource: font Times-Italic
 %%IncludeResource: font Times-Bold
-%%IncludeResource: font Symbol
-%%IncludeResource: font ZapfDingbats
+%%IncludeResource: font Times-BoldItalic
+%%IncludeResource: font Courier
 %FOPEndFontDict
 %%BeginResource: encoding WinAnsiEncoding
 /WinAnsiEncoding [
@@ -269,6 +269,20 @@ b4_Inc_state restore
 ] def
 %%EndResource
 %FOPBeginFontReencode
+/Courier-Oblique findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Courier-Oblique exch definefont pop
+/Courier-BoldOblique findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Courier-BoldOblique exch definefont pop
 /Courier-Bold findfont
 dup length dict begin
   {1 index /FID ne {def} {pop pop} ifelse} forall
@@ -283,41 +297,6 @@ dup length dict begin
   currentdict
 end
 /Helvetica exch definefont pop
-/Courier-BoldOblique findfont
-dup length dict begin
-  {1 index /FID ne {def} {pop pop} ifelse} forall
-  /Encoding WinAnsiEncoding def
-  currentdict
-end
-/Courier-BoldOblique exch definefont pop
-/Courier-Oblique findfont
-dup length dict begin
-  {1 index /FID ne {def} {pop pop} ifelse} forall
-  /Encoding WinAnsiEncoding def
-  currentdict
-end
-/Courier-Oblique exch definefont pop
-/Times-Roman findfont
-dup length dict begin
-  {1 index /FID ne {def} {pop pop} ifelse} forall
-  /Encoding WinAnsiEncoding def
-  currentdict
-end
-/Times-Roman exch definefont pop
-/Helvetica-BoldOblique findfont
-dup length dict begin
-  {1 index /FID ne {def} {pop pop} ifelse} forall
-  /Encoding WinAnsiEncoding def
-  currentdict
-end
-/Helvetica-BoldOblique exch definefont pop
-/Helvetica-Bold findfont
-dup length dict begin
-  {1 index /FID ne {def} {pop pop} ifelse} forall
-  /Encoding WinAnsiEncoding def
-  currentdict
-end
-/Helvetica-Bold exch definefont pop
 /Helvetica-Oblique findfont
 dup length dict begin
   {1 index /FID ne {def} {pop pop} ifelse} forall
@@ -325,20 +304,27 @@ dup length dict begin
   currentdict
 end
 /Helvetica-Oblique exch definefont pop
-/Times-BoldItalic findfont
+/Helvetica-Bold findfont
 dup length dict begin
   {1 index /FID ne {def} {pop pop} ifelse} forall
   /Encoding WinAnsiEncoding def
   currentdict
 end
-/Times-BoldItalic exch definefont pop
-/Courier findfont
+/Helvetica-Bold exch definefont pop
+/Helvetica-BoldOblique findfont
 dup length dict begin
   {1 index /FID ne {def} {pop pop} ifelse} forall
   /Encoding WinAnsiEncoding def
   currentdict
 end
-/Courier exch definefont pop
+/Helvetica-BoldOblique exch definefont pop
+/Times-Roman findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Times-Roman exch definefont pop
 /Times-Italic findfont
 dup length dict begin
   {1 index /FID ne {def} {pop pop} ifelse} forall
@@ -353,6 +339,20 @@ dup length dict begin
   currentdict
 end
 /Times-Bold exch definefont pop
+/Times-BoldItalic findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Times-BoldItalic exch definefont pop
+/Courier findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Courier exch definefont pop
 %FOPEndFontReencode
 %%EndProlog
 %%Page: 1 1
@@ -2108,6 +2108,7 @@ GS
 [0.75 0 0 0.75 54.75 83.8751] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2126,6 +2127,7 @@ GS
 [0.75 0 0 0.75 79.78846 223.42264] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2142,6 +2144,7 @@ GS
 [0.75 0 0 0.75 104.82692 248.11691] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2158,6 +2161,7 @@ GS
 [0.75 0 0 0.75 129.86538 254.10356] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2174,6 +2178,7 @@ GS
 [0.75 0 0 0.75 154.90385 257.57128] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2190,6 +2195,7 @@ GS
 [0.75 0 0 0.75 167.42308 260.08971] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2206,6 +2212,7 @@ GS
 [0.75 0 0 0.75 255.0577 261.90225] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2222,6 +2229,7 @@ GS
 [0.75 0 0 0.75 280.09616 261.77921] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2238,6 +2246,7 @@ GS
 [0.75 0 0 0.75 305.13462 261.87916] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2254,6 +2263,7 @@ GS
 [0.75 0 0 0.75 330.17308 261.96103] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2270,6 +2280,7 @@ GS
 [0.75 0 0 0.75 355.21154 262.02539] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2286,6 +2297,7 @@ GS
 [0.75 0 0 0.75 380.25 262.08] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2302,6 +2314,7 @@ GS
 [0.75 0 0 0.75 54.75 49.10958] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2318,6 +2331,7 @@ GS
 [0.75 0 0 0.75 79.78846 212.65588] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2334,6 +2348,7 @@ GS
 [0.75 0 0 0.75 104.82692 247.41444] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2350,6 +2365,7 @@ GS
 [0.75 0 0 0.75 129.86538 253.90219] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2366,6 +2382,7 @@ GS
 [0.75 0 0 0.75 154.90385 257.42342] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2382,6 +2399,7 @@ GS
 [0.75 0 0 0.75 167.42308 259.93744] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2398,6 +2416,7 @@ GS
 [0.75 0 0 0.75 255.0577 261.86918] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2414,6 +2433,7 @@ GS
 [0.75 0 0 0.75 280.09616 261.75536] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2430,6 +2450,7 @@ GS
 [0.75 0 0 0.75 305.13462 261.86272] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2446,6 +2467,7 @@ GS
 [0.75 0 0 0.75 330.17308 261.94803] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2462,6 +2484,7 @@ GS
 [0.75 0 0 0.75 355.21154 262.01202] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -2478,6 +2501,7 @@ GS
 [0.75 0 0 0.75 380.25 262.06629] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -4503,16 +4527,16 @@ GS
 [0.75 0 0 0.75 0 0] CT
 1 GC
 N
-/f-1274507866{310 120 M
-310 46 L
-494 46 L
-494 120 L
+/f-1641354314{496 118 M
+496 44 L
+312 44 L
+312 118 L
 cp}def
-f-1274507866
+f-1641354314
 f
 GR
 GS
-[0.75 0 0 0.75 267.75 44.625] CT
+[0.75 0 0 0.75 269.25 43.125] CT
 /Helvetica 18 F
 GS
 [1 0 0 1 0 0] CT
@@ -4527,12 +4551,12 @@ GS
 1 LJ
 2.667 LW
 N
-314 59.5 M
-354 59.5 L
+316 57.5 M
+356 57.5 L
 S
 GR
 GS
-[0.75 0 0 0.75 267.75 62.25] CT
+[0.75 0 0 0.75 269.25 60.75] CT
 /Helvetica 18 F
 GS
 [1 0 0 1 0 0] CT
@@ -4542,32 +4566,34 @@ GS
 GR
 GR
 GS
-[0.75 0 0 0.75 250.5 68.9625] CT
+[0.75 0 0 0.75 252 67.21875] CT
 1 0 0 RC
 N
 f-401390582
 f
 GR
 GS
-[0.75 0 0 0.75 250.5 68.9625] CT
+[0.75 0 0 0.75 252 67.21875] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
 S
 GR
 GS
-[0.75 0 0 0.75 250.5 55.5375] CT
+[0.75 0 0 0.75 252 54.28125] CT
 1 0 0 RC
 N
 f-401390582
 f
 GR
 GS
-[0.75 0 0 0.75 250.5 55.5375] CT
+[0.75 0 0 0.75 252 54.28125] CT
 1 0 0 RC
 10.0 ML
+0.667 LW
 N
 -4 0 M
 4 0 L
@@ -4579,25 +4605,19 @@ GS
 1 LJ
 0.667 LW
 N
-334 91.95 M
-334 74.05 L
+336 89.625 M
+336 72.375 L
 S
 GR
 GS
-[0.75 0 0 0.75 250.5 62.25] CT
+[0.75 0 0 0.75 252 60.75] CT
 1 0 0 RC
 N
-/f-1057828618{1.333 0 M
-1.333 0.736 0.736 1.333 0 1.333 C
--0.736 1.333 -1.333 0.736 -1.333 0 C
--1.333 -0.736 -0.736 -1.333 0 -1.333 C
-0.736 -1.333 1.333 -0.736 1.333 0 C
-cp}def
-f-1057828618
+f-1759579234
 f
 GR
 GS
-[0.75 0 0 0.75 267.75 79.875] CT
+[0.75 0 0 0.75 269.25 78.375] CT
 /Helvetica 18 F
 GS
 [1 0 0 1 0 0] CT
@@ -4612,8 +4632,8 @@ GS
 2 LJ
 1.333 LW
 N
-314 106.5 M
-354 106.5 L
+316 104.5 M
+356 104.5 L
 S
 GR
 GS
@@ -4622,10 +4642,10 @@ GS
 10.0 ML
 0.667 LW
 N
-310 120 M
-310 46 L
-494 46 L
-494 120 L
+312 118 M
+312 44 L
+496 44 L
+496 118 L
 cp
 S
 GR
