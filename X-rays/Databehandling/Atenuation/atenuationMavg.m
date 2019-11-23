@@ -28,8 +28,12 @@ AbsorberThicknessUs =[1,1,1]*10^(-4);
 
 dat = load([folderPath I0Name]);
 X = dat(:,1);
-E = c2E(X);
+I=3:3:length(X);
+
+E = c2E(X(I));
 I0Y = dat(:,2);
+I0Y = I0Y(I-2)+I0Y(I-1)+I0Y(I);
+
 I0YUs = sqrt(I0Y)+(I0Y==0);
 I0YT = I0Y/I0Time;
 I0YTUs = I0YUs/I0Time;
@@ -38,11 +42,9 @@ I0YTUs = I0YUs/I0Time;
 dat = load([folderPath '\GivenAtenuation\Gold.txt']);
 AuE  = dat(:,1) % keV
 AuAtt  = dat(:,2) %cm^-1
-
 dat = load([folderPath '\GivenAtenuation\Molybdenum.txt']);
 MoE  = dat(:,1) % keV
 MoAtt  = dat(:,2) %cm^-1
-
 dat = load([folderPath '\GivenAtenuation\Silver.txt']);
 AgE  = dat(:,1) % keV
 AgAtt  = dat(:,2) %cm^-1
@@ -55,11 +57,13 @@ for i = 1:3
     AbsorberTime = sum(AbsorberTimes{i});
     AbsorberThicknes = AbsorberThickness(i);
     AbsorberThicknesUs = AbsorberThicknessUs(i);
-    Y = zeros(size(E));
+    Y = zeros(size(X));
     for j =1:length(AbsorberName)
         dat = load([folderPath AbsorberName{j}]);
         Y = Y+dat(:,2);
     end
+    Y = Y(I-2)+Y(I-1)+Y(I);
+
     YUs = sqrt(Y)+(Y==0);
     YT = Y/AbsorberTime;
     YTUs = YUs/AbsorberTime;   
@@ -92,9 +96,7 @@ for i = 1:3
     errorbar(E,attenuation,attenuationUs,'.','markersize',8)
     
     plot(AuE,AuAtt,'-','linewidth',1)
-    
     plot(MoE,MoAtt,'-','linewidth',1)
-
     plot(AgE,AgAtt,'-','linewidth',1)
     
 end

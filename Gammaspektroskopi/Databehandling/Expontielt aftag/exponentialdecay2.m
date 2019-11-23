@@ -24,21 +24,21 @@ startTime = [22.07,25.36,21.2,21.2];
 startTimeUs = [1,1,1,1];
 %Mass of sample in g
 %%
-mass = [2.50,2.50,4.10,4.20];
-massUs = [0.05,0.05,0.05,0.05];
+mass = [2.50,2.50,4.10];
+massUs = [0.05,0.05,0.05];
 %%
 %%Constants
-M = 54.93804;
+MA = 54.93804;
+
 NA = 6.02214076*10^23; 
 CrossSection = 13.36 *10^-28;
 CrossSectionUs = 0.05*10^-28;
 DATA = {};
-for i = 1:4
+for i = 1:3
    DATA{i} =  load(['..\..\Manganese\' filenames{i}]);
 end
 
 %%
-close all
 
 for i=1:3
 data = load(['..\..\Manganese\' filenames{i}]);
@@ -47,9 +47,9 @@ timestamps = data(:,1);
 chanelEvent = data(:,2);
 n = length(chanelEvent);
 
-DeltaN = floor(n/30)
+% DeltaN = floor(n/30)
 
-% DeltaN = 100000;
+DeltaN = 100000;
 lowCh  = startGuess(i)-50;
 highCh  = startGuess(i)+50;
 
@@ -60,7 +60,7 @@ totDecayUs = zeros(size(floor(n/DeltaN)));
 for j = 1:(floor(n/DeltaN))
     indexes = ((j-1).*DeltaN+1):(j.*DeltaN);
     t(j) = (timestamps(indexes(end))+timestamps(indexes(1)))/2;
-    deltaT(j) = (timestamps(indexes(end))-timestamps(indexes(1)))/2;
+    deltaT(j) = (timestamps(indexes(end))-timestamps(indexes(1)));
     
     
     c = chanelEvent(indexes);
@@ -158,18 +158,7 @@ errorbar(th,dDecay_dt,dDecayUs_dt,'.');
 
 figure(10);
 hold on
-
 errorbar(th,dDecay_dt/mass(i),dDecayUs_dt/mass(i),'.');
-
-
-%fjerner et punkt som svare til påfyldning af detecroen
-if(i == 4)
-    th = th([1:17 19:end])
-    deltaTh = deltaTh([1:17 19:end])
-    dDecay_dt = dDecay_dt([1:17 19:end])
-    dDecayUs_dt = dDecayUs_dt([1:17 19:end])
-end
-
 
 weights = 1./dDecayUs_dt.^2;
 beta0 = [2.5,dDecay_dt(1)];
@@ -190,17 +179,17 @@ activety = beta(2);
 activetyFitUs = sqrt(us(2,2));
 
 activetyUs(i) = sqrt(activetyFitUs^2+(-activety/beta(1)*startTimeUs(i)/(60*60))^2);
-
-Jh = (activety./BR).*M./(mass(i).*NA.*CrossSection)
-JhUs = sqrt(...
-    (activetyUs(i)/BR*M/(mass(i)*NA*CrossSection))^2+...
-    (activety/BR^2*M/(mass(i)*NA*CrossSection)*BRUs)^2+...
-    (activety/BR*M/(mass(i)^2*NA*CrossSection)*massUs(i))^2+...
-    (activety/BR*M/(mass(i)*NA*CrossSection^2)*CrossSectionUs)^2);
-
-Jcms = Jh/(60^2*100^2)
-JcmsUs = JhUs/(60^2*100^2)
-
+% 
+% Jh = (activety./BR).*M./(mass(i).*NA.*CrossSection)
+% JhUs = sqrt(...
+%     (activetyUs(i)/BR*M/(mass(i)*NA*CrossSection))^2+...
+%     (activety/BR^2*M/(mass(i)*NA*CrossSection)*BRUs)^2+...
+%     (activety/BR*M/(mass(i)^2*NA*CrossSection)*massUs(i))^2+...
+%     (activety/BR*M/(mass(i)*NA*CrossSection^2)*CrossSectionUs)^2);
+% 
+% Jcms = Jh/(60^2*100^2)
+% JcmsUs = JhUs/(60^2*100^2)
+% 
 tau = beta(1)
 tauUs = (ci(1,2)-ci(1,1))/2
 
@@ -213,12 +202,12 @@ figure(i+4);
 plot(ths,fitfunction(beta,ths),'-','linewidth',1)
 figure(10);
 plot(ths,fitfunction(beta,ths)/mass(i),'-','linewidth',1)
-
-
-JhList(i) = Jh;
-JhUsList(i) = JhUs;
-
-
+% 
+% 
+% JhList(i) = Jh;
+% JhUsList(i) = JhUs;
+% 
+% 
 halftimeList(i) = halftime;
 halftimeUsList(i) = halftimeUs;
 
@@ -250,12 +239,12 @@ std(halftimeUsList(1:3))
 
 %%
 disp('_________________________________')
-Jh = (BETA./BR).*M./(mass(1:3).*NA.*CrossSection)
+Jh = (BETA./BR).*MA./(mass(1:3).*NA.*CrossSection)
 JhUs = sqrt(...
-    (activetyUs./BR.*M./(mass(1:3)*NA*CrossSection)).^2+...
-    (BETA./BR^2.*M./(mass(1:3)*NA*CrossSection)*BRUs).^2+...
-    (BETA./BR.*M./(mass(1:3).^2.*NA*CrossSection).*massUs(1:3)).^2+...
-    (BETA./BR.*M./(mass(1:3)*NA*CrossSection^2)*CrossSectionUs).^2);
+    (activetyUs./BR.*MA./(mass(1:3)*NA*CrossSection)).^2+...
+    (BETA./BR^2.*MA./(mass(1:3)*NA*CrossSection)*BRUs).^2+...
+    (BETA./BR.*MA./(mass(1:3).^2.*NA*CrossSection).*massUs(1:3)).^2+...
+    (BETA./BR.*MA./(mass(1:3)*NA*CrossSection^2)*CrossSectionUs).^2);
 
 
 Jscm = Jh/(60*60*100^2)
