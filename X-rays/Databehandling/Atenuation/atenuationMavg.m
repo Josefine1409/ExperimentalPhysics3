@@ -9,9 +9,9 @@ a = 0.031179;
 aUs = 3.605e-06;
 b = -0.08267;
 bUs = 0.0025276;
-
+coVarAB = -8.2792e-09;
 c2E = @(c) a*c+b;
-c2EUs = @(c,cUs) sqrt((cUs*a).^2+(c*aUs).^2+bUs.^2);
+c2EUs = @(c,cUs) sqrt((cUs*a).^2+(c*aUs).^2+bUs.^2+coVarAB.*c);
 E2c = @(E) (E-b)/a
 
 
@@ -24,6 +24,7 @@ AbsorberNames ={{'\Absorber1\Absorber1  ca. 7 min.txt'},{'\Absorber2\Absorber2.t
 AbsorberTimes = {[425.48],[599.75],[1532.94,600.14]};
 AbsorberThickness = [33,30,25]*10^(-4); % Cm
 AbsorberThicknessUs =[1,1,1]*10^(-4);
+
 
 
 dat = load([folderPath I0Name]);

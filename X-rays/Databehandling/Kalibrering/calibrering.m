@@ -4,9 +4,9 @@ a = 0.031179;
 aUs = 3.605e-06;
 b = -0.08267;
 bUs = 0.0025276;
-
+coVarAB = -8.2792e-09;
 c2E = @(c) a*c+b;
-c2EUs = @(c,cUs) sqrt((cUs*a).^2+(c*aUs).^2+bUs.^2);
+c2EUs = @(c,cUs) sqrt((cUs*a).^2+(c*aUs).^2+bUs.^2+coVarAB.*c);
 E2c = @(E) (E-b)/a
 
 
@@ -26,7 +26,7 @@ peakValues = {[13.9,16.84,17.7502,20.7848,26.350,59.5409],[36.6],[5.8943,6.490]}
 peakValuesUs = [0.1,0.01,  0.0001, 0.0001, 0.001, 0.0001,   0.1,0.0001,0.0001,0.00001]
 dPeakBorder = [998,1061]
 dPeakValue = 32.1936
-peakBorders = {[438,461;528,559;559,588;661,678;835,865;1881,1931],[1152,1186],[181,202;203,215]};
+peakBorders = {[430,465;528,559;559,588;661,678;835,865;1881,1931],[1152,1186],[181,202;203,215]};
 
 
 
@@ -35,6 +35,9 @@ pValue = [];
 peakChannel = [];
 peakUns = [];
 peakE = [];
+
+colorPlot = {'#0072BD','#D95319','#EDB120'}	
+	
 
 for i = 1:length(filenames)
     dat = load(['..\..\Kalibrering\' filenames{i}]);
@@ -51,7 +54,7 @@ for i = 1:length(filenames)
     n = length(peakValue);
     
     %%  Passer kalibrerigen?
-    figure
+    figure(i*2-1)
     errorbar(c2E(X),Y,YUs,'.')
     xlabel('Energy (E) [keV]')
     ylabel('Counts (n)')
@@ -67,7 +70,15 @@ for i = 1:length(filenames)
     end
     
     %% Fit data
-    figure
+%     figure(10)
+%     errorbar(X,Y,YUs,'.','markersize',10,'color',colorPlot{i})
+%     hold on
+%     xlabel('Channel number (Ch)')
+%     ylabel('Counts (n)')
+%     set(gca,'FontSize',15) 
+    
+    %
+    fig = figure(i*2)
     errorbar(X,Y,YUs,'.','markersize',10)
     hold on
     xlabel('Channel number (Ch)')
@@ -75,6 +86,11 @@ for i = 1:length(filenames)
     set(gca,'FontSize',15) 
     title(name)
     % Enkelt peaks
+    ax1 = gca;
+    hold(ax1, 'on');
+    xlim([min(min(peakBorder))-100,max(max(peakBorder))+100])
+    ylim([0,max(Y)*1.2])
+    
     for j = 1:n
         %Udvælger data
         x = X;
@@ -94,14 +110,37 @@ for i = 1:length(filenames)
         w = 1./yUs.^2;
         [beta,R,J,CovB,MSE,ErrorModelInfo] = nlinfit(x,y,fitfunction,beta0,'weights',w);
 
-        plot(x,fitfunction(beta,x),'k--','linewidth',2)
-        plot(x,beta(4).*x+beta(5))
+        plt = plot(ax1,x,fitfunction(beta,x),'k--','linewidth',2)
+        plot(ax1,x,beta(4).*x+beta(5))
         var = CovB/MSE;
 
-        txt = text(beta(1),max(y)+2,['\leftarrow' num2str(peakValue(j)) ' MeV']);
+        txt = text(ax1,beta(1),max(y)+2,['\leftarrow' num2str(round(peakValue(j),1)) ' MeV']);
         set(txt,'Rotation',90);
-        set(txt,'FontSize',14);
+        set(txt,'FontSize',13);
+%         xan = [0.1,0.2];
+%         yan = [0.1,0.5];
+%         a = annotation(plt,'textarrow',xan,yan,'String',[num2str(round(peakValue(j),1)) ' MeV']);
+% %         a = annotation('textarrow',beta(1),max(y)+2,'String',[num2str(round(peakValue(j),1)) ' MeV']);
+%         set(a,'FontSize',13);
 
+        if (i==1)&&(j==1)
+            ax2 = axes('Position',[(0.149+0.756*0.4) (0.1481+0.771*0.4) (0.756*(0.6)) (0.771*(0.6))])
+            t = title('Fit of one peak', 'Units', 'normalized', 'Position', [0.5, -0.2, 0])
+            box on
+            hold on
+            errorbar(X,Y,YUs,'.','markersize',10)
+            plot(x,fitfunction(beta,x),'k--','linewidth',2)
+            plot(x,beta(4).*x+beta(5))
+            xlim([min(x)-10,max(x)+10])
+            
+
+        end
+%         figure(10)
+%         plot(x,fitfunction(beta,x),'k--','linewidth',2)
+%         txt = text(beta(1),max(y)+2,['\leftarrow' num2str(peakValue(j)) ' MeV']);
+%         set(txt,'Rotation',90);
+%         set(txt,'FontSize',14);
+%         
         % plot([beta(1)+us(1,1),beta(1)+us(1,1)],[0,max(y)])
         % plot([beta(1)-us(1,1),beta(1)-us(1,1)],[0,max(y)])
 
@@ -110,6 +149,8 @@ for i = 1:length(filenames)
         peakChannel(end+1) = beta(1,1);
         peakUns(end+1) = sqrt(var(1,1));
         peakE(end+1) = peakValue(j);
+        
+%         figure(i*2)
     end
     %%Double Peak
     if i ==2
@@ -139,7 +180,14 @@ for i = 1:length(filenames)
         txt = text(beta(1),max(y)+2,['\leftarrow' num2str(dPeakValue(j)) ' MeV']);
         set(txt,'Rotation',90);
         set(txt,'FontSize',14);
-
+        
+%         figure(10)
+%         plot(x,fitfunction(beta,x),'k--','linewidth',2)
+%         txt = text(beta(1),max(y)+2,['\leftarrow' num2str(dPeakValue(j)) ' MeV']);
+%         set(txt,'Rotation',90);
+%         set(txt,'FontSize',14);
+%         
+        
         MSECount(end+1) = MSE;
         pValue(end+1) = 1-chi2cdf(MSE*(length(y)-8),(length(y)-8));
         peakChannel(end+1) = beta(1);
@@ -200,3 +248,5 @@ pValue = 1-chi2cdf(MSE*(length(y)-2),(length(y)-2))
 
 % disp(['Energi som funktion af channel: E= ' num2str(beta(1)) '+-' num2str((ci(1,2)-ci(1,1))/2) 'Channel+' num2str(beta(2)) '+-' num2str((ci(2,2)-ci(2,1))/2) 'MeV'])
 disp(['Energi som funktion af channel: E= ' num2str(beta(1)) '+-' num2str(sqrt(var(1,1))) 'Channel+' num2str(beta(2)) '+-' num2str(sqrt(var(2,2))) 'keV'])
+
+
