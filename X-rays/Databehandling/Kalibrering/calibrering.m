@@ -30,8 +30,8 @@ peakBorders = {[430,465;528,559;559,588;661,678;835,865;1881,1931],[1152,1186],[
 
 
 
-MSECount = [];
-pValue = [];
+MSECOunt = [];
+PValue = [];
 peakChannel = [];
 peakUns = [];
 peakE = [];
@@ -84,7 +84,7 @@ for i = 1:length(filenames)
     xlabel('Channel number (Ch)')
     ylabel('Counts (n)')
     set(gca,'FontSize',15) 
-    title(name)
+%     title(name)
     % Enkelt peaks
     ax1 = gca;
     hold(ax1, 'on');
@@ -132,7 +132,8 @@ for i = 1:length(filenames)
             plot(x,fitfunction(beta,x),'k--','linewidth',2)
             plot(x,beta(4).*x+beta(5))
             xlim([min(x)-10,max(x)+10])
-            
+            set(gca,'FontSize',14) 
+
 
         end
 %         figure(10)
@@ -144,8 +145,8 @@ for i = 1:length(filenames)
         % plot([beta(1)+us(1,1),beta(1)+us(1,1)],[0,max(y)])
         % plot([beta(1)-us(1,1),beta(1)-us(1,1)],[0,max(y)])
 
-        MSECount(end+1) = MSE;
-        pValue(end+1) = 1-chi2cdf(MSE*(length(y)-5),(length(y)-5));
+        MSECOunt(end+1) = MSE;
+        PValue(end+1) = 1-chi2cdf(MSE*(length(y)-5),(length(y)-5));
         peakChannel(end+1) = beta(1,1);
         peakUns(end+1) = sqrt(var(1,1));
         peakE(end+1) = peakValue(j);
@@ -188,8 +189,8 @@ for i = 1:length(filenames)
 %         set(txt,'FontSize',14);
 %         
         
-        MSECount(end+1) = MSE;
-        pValue(end+1) = 1-chi2cdf(MSE*(length(y)-8),(length(y)-8));
+        MSECOunt(end+1) = MSE;
+        PValue(end+1) = 1-chi2cdf(MSE*(length(y)-8),(length(y)-8));
         peakChannel(end+1) = beta(1);
         peakUns(end+1) = sqrt(var(1,1));
         peakE(end+1) = dPeakValue;
@@ -221,7 +222,7 @@ ylabel('Channel number (Ch)')
 set(gca,'FontSize',15) 
 
 plot(Es,Ypred,'-','linewidth',1)
-errorbar(x,y',yUs,'.','markersize',8)
+errorbar(x,y',yUs,'.','markersize',12)
 
 plot(Es,Ypred+delta,'b--','linewidth',1)
 plot(Es,Ypred-delta,'b--','linewidth',1)
@@ -236,7 +237,7 @@ hold on
 plot(Es,0.*Es,'b','linewidth',1)
 
 [YpredMeasurement,deltaM] = nlpredci(@(beta,x) linFun(beta,x),x,beta,R,'jacobian',J,'alpha',0.35);
-errorbar(x,y-YpredMeasurement',yUs,'.r','markersize',8)
+errorbar(x,y-YpredMeasurement',yUs,'.r','markersize',12)
 plot(Es,delta,'k--','linewidth',1)
 plot(Es,-delta,'k--','linewidth',1)
 

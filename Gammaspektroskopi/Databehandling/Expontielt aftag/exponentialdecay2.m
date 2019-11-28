@@ -156,10 +156,6 @@ ylabel('Decays pr hour [1/h]')
 set(gca,'FontSize',15) 
 errorbar(th,dDecay_dt,dDecayUs_dt,'.');
 
-figure(10);
-hold on
-errorbar(th,dDecay_dt/mass(i),dDecayUs_dt/mass(i),'.');
-
 weights = 1./dDecayUs_dt.^2;
 beta0 = [2.5,dDecay_dt(1)];
 fitfunction = @(beta,x) beta(2).*exp(-x./beta(1));
@@ -201,7 +197,10 @@ ths = linspace(0,max(th),100);
 figure(i+4);
 plot(ths,fitfunction(beta,ths),'-','linewidth',1)
 figure(10);
-plot(ths,fitfunction(beta,ths)/mass(i),'-','linewidth',1)
+hold on
+plot(ths,fitfunction(beta,ths)/mass(i),'-','linewidth',1.5)
+errorbar(th,dDecay_dt/mass(i),dDecayUs_dt/mass(i),'.');
+
 % 
 % 
 % JhList(i) = Jh;
@@ -237,7 +236,6 @@ halftimeUs = (sqrt(sum(WhalfTime)))^-1
 std(halftimeUsList(1:3))
 
 
-%%
 disp('_________________________________')
 Jh = (BETA./BR).*MA./(mass(1:3).*NA.*CrossSection)
 JhUs = sqrt(...
